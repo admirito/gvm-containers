@@ -1,1 +1,32 @@
 * gvm-containers
+** Introduction
+This is the Git repo of the tools to deploy Greenbone Vulnerability
+Management with containers. It is based on the [[https://community.greenbone.net/c/gse][Greenbone Source
+Edition (GSE)]] open source project.
+** Docker
+The source code of [[https://hub.docker.com/u/admirito][admirito]]'s unofficial docker images for Greenbone
+Vulnerability Management 10--which is based on [[https://launchpad.net/~mrazavi/+archive/ubuntu/gvm][admirito's GVM PPA]]--is
+hosted on this repo. It contains the source for the following docker
+images:
+- [[https://hub.docker.com/r/admirito/gvmd][gvmd]]: Greenbone Vulnerability Manager
+- [[https://hub.docker.com/r/admirito/openvassd][openvassd]]: OpenVAS remote network security scanner
+- [[https://hub.docker.com/r/admirito/gsad][gsad]]: Greenbone Security Assistant
+- [[https://hub.docker.com/r/admirito/gvm-postgres][gvm-postgres]]: PostgreSQL 10 Dataabase with "uuid-ossp" extension to
+  be used by gvmd
+To setup the GVM system with =docker-compose=, just clone the repo and
+issue =docker-compose up= command:
+
+#+NAME: setup GVM with docker-compose
+#+BEGIN_SRC shell
+git clone https://github.com/admirito/gvm-containers.git
+
+cd gvm-containers
+
+docker-compose up
+#+END_SRC
+
+You can uncomment the =cert-scap-sync= and =nvt-sync= containers from
+the =docker-compose.yml= file to synchronize NVT/CERT/SCAP data.
+
+** Helm Chart
+TODO: A helm chart for deploying the docker images on kubernetes will be available soon.
