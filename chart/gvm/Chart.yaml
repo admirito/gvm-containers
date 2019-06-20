@@ -1,0 +1,16 @@
+apiVersion: v1
+name: gvm
+version: 0.1.0
+appVersion: "10.0.0"
+description: The Greenbone Vulnerability Management Solution (previously known as Open Vulnerability Assessment System) i.e. a remote network security auditing tool
+keywords:
+  - gvm
+  - openvas
+  - security
+home: https://community.greenbone.net/
+icon: https://community.greenbone.net/uploads/default/original/1X/2bd8ed1c87dd1a124f45b394039d3ec4bbf62e8e.png
+sources:
+  - https://github.com/admirito/gvm-containers
+maintainers:
+  - name: Mohammad Razavi
+    twitter: "@admirito"

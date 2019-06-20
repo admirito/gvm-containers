@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gvm.fullname" . }}-gsad
+  labels:
+  {{- $_ := set . "applicationNameSuffix" "gsad" }}
+  {{- include "gvm.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "gvm.name" . }}-gsad
+      app.kubernetes.io/instance: {{ include "gvm.instance" . }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "gvm.name" . }}-gsad
+        app.kubernetes.io/instance: {{ include "gvm.instance" . }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ tpl .Values.image.gsad.registry . }}/{{ tpl .Values.image.gsad.repository . }}:{{ tpl .Values.image.gsad.tag . }}"
+          imagePullPolicy: {{ .Values.image.gsad.pullPolicy }}
+          env:
+            - name: GVMD_HOST
+              value: {{ .Release.Name }}-gvmd
+          ports:
+            - name: gsad
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: gsad
+          readinessProbe:
+            httpGet:
+              path: /
+              port: gsad
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

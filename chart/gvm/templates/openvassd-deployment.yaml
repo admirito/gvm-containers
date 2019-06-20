@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gvm.fullname" . }}-openvassd
+  labels:
+  {{- $_ := set . "applicationNameSuffix" "openvassd" }}
+  {{- include "gvm.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "gvm.name" . }}-openvassd
+      app.kubernetes.io/instance: {{ include "gvm.instance" . }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "gvm.name" . }}-openvassd
+        app.kubernetes.io/instance: {{ include "gvm.instance" . }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ tpl .Values.image.openvassd.registry . }}/{{ tpl .Values.image.openvassd.repository . }}:{{ tpl .Values.image.openvassd.tag . }}"
+          imagePullPolicy: {{ .Values.image.openvassd.pullPolicy }}
+          volumeMounts:
+            - name: run-dir
+              mountPath: /var/run
+            - name: redis-socket-dir
+              mountPath: /var/run/redis
+            - name: data-volume
+              subPath: {{ include "gvm.dataSubPathPrefix" . }}plugins
+              mountPath: /var/lib/openvas/plugins
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        - name: {{ .Chart.Name }}-openvassd-listener
+          image: "{{ tpl .Values.image.socat.registry . }}/{{ tpl .Values.image.socat.repository . }}:{{ tpl .Values.image.socat.tag . }}"
+          imagePullPolicy: {{ .Values.image.socat.pullPolicy }}
+          args: ["-d", "-d", "TCP4-LISTEN:9391,fork", "UNIX-CONNECT:/var/run/openvassd.sock"]
+          ports:
+            - name: openvassd
+              containerPort: 9391
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: openvassd
+          readinessProbe:
+            tcpSocket:
+              port: openvassd
+          volumeMounts:
+            - name: run-dir
+              mountPath: /var/run
+        - name: {{ .Chart.Name }}-redis-connector
+          image: "{{ tpl .Values.image.socat.registry . }}/{{ tpl .Values.image.socat.repository . }}:{{ tpl .Values.image.socat.tag . }}"
+          imagePullPolicy: {{ .Values.image.socat.pullPolicy }}
+          args: ["-d", "-d", "UNIX-LISTEN:/var/run/redis/redis.sock,fork", "TCP4-CONNECT:{{ .Release.Name }}-openvassd-redis-master:6379"]
+          volumeMounts:
+            - name: run-dir
+              mountPath: /var/run
+            - name: redis-socket-dir
+              mountPath: /var/run/redis
+      volumes:
+        - name: run-dir
+          emptyDir: {}
+        - name: redis-socket-dir
+          emptyDir: {}
+        - name: data-volume
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ tpl .Values.persistence.existingClaim . | default (include "gvm.fullname" .) }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "gvm.fullname" . }}-openvassd
+  labels:
+  {{- $_ := set . "applicationNameSuffix" "openvassd" }}
+  {{- include "gvm.labels" . | nindent 4 }}
+  {{- if .Values.service.annotations }}
+  annotations:
+    {{- toYaml .Values.service.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  clusterIP: "{{ .Values.service.clusterIP }}"
+  ports:
+    - name: openvassd
+      port: {{ .Values.openvassdService.port }}
+      targetPort: openvassd
+      protocol: TCP
+      {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.openvassdService.nodePort))) }}
+      nodePort: {{ .Values.openvassdService.nodePort }}
+      {{- end }}
+  {{- if .Values.openvassdService.externalIPs }}
+  externalIPs:
+    {{- toYaml .Values.openvassdService.externalIPs | nindent 4 }}
+  {{- end }}
+  {{- if .Values.openvassdService.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.openvassdService.loadBalancerIP }}"
+  {{- end }}
+  {{- if .Values.openvassdService.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- toYaml .Values.openvassdService.loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "gvm.name" . }}-openvassd
+    app.kubernetes.io/instance: {{ include "gvm.instance" . }}

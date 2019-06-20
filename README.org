@@ -29,4 +29,5 @@ You can uncomment the =cert-scap-sync= and =nvt-sync= containers from
 the =docker-compose.yml= file to synchronize NVT/CERT/SCAP data.
 
 ** Helm Chart
-TODO: A helm chart for deploying the docker images on kubernetes will be available soon.
+A helm chart for deploying the docker images on kubernetes is also
+available. For more information please read the [[./chart/README.org][chart/README.org]].

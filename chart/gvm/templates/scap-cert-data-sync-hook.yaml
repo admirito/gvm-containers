@@ -1,0 +1,39 @@
+{{- if .Values.syncScapCertDataAfterInstall }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "gvm.fullname" . }}-scap-cert-data-sync
+  labels:
+  {{- include "gvm.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/hook: post-install
+    helm.sh/hook-weight: "0"
+    helm.sh/hook-delete-policy: hook-succeeded,before-hook-creation
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: {{ include "gvm.instance" . }}
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ tpl .Values.image.gvmd.registry . }}/{{ tpl .Values.image.gvmd.repository . }}:{{ tpl .Values.image.gvmd.tag . }}"
+          imagePullPolicy: {{ .Values.image.gvmd.pullPolicy }}
+          command: ["sh", "-c", "greenbone-certdata-sync; sleep 3; greenbone-scapdata-sync; true"]
+          volumeMounts:
+            - name: data-volume
+              subPath: {{ include "gvm.dataSubPathPrefix" . }}cert-data
+              mountPath: /var/lib/gvm/cert-data
+            - name: data-volume
+              subPath: {{ include "gvm.dataSubPathPrefix" . }}scap-data
+              mountPath: /var/lib/gvm/scap-data
+      volumes:
+        - name: data-volume
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ tpl .Values.persistence.existingClaim . | default (include "gvm.fullname" .) }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+{{- end }}
