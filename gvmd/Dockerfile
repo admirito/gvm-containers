@@ -7,8 +7,12 @@ RUN set -ex; \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3C453D244AA450E0; \
     echo "deb http://ppa.launchpad.net/mrazavi/gvm/ubuntu bionic main" > /etc/apt/sources.list.d/mrazavi-ubuntu-gvm-bionic.list; \
     apt update; \
-    DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends gvmd-pg postgresql-client texlive-latex-base xsltproc gnutls-bin xmlstarlet zip python3 python3-lxml smbclient snmp gnupg openssh-client sshpass socat haveged rsync; \
+    DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends gvmd-pg postgresql-client texlive-latex-base xsltproc gnutls-bin xmlstarlet zip python3 python3-lxml smbclient snmp gnupg openssh-client sshpass socat haveged rsync wget; \
     sed -i 's|/var/log/gvm/gvmd.log|/dev/stdout|g' /etc/gvm/gvmd_log.conf; \
+    cd /; \
+    apt download openvas-scanner; \
+    dpkg --fsys-tarfile openvas-scanner_*.deb | tar xf - ./usr/sbin/greenbone-nvt-sync; \
+    rm -rf ./openvas-scanner_*.deb; \
     rm -rf /var/lib/apt/lists/*
 
 ENV GVMD_POSTGRESQL_URI="postgresql://gvmduser:password@postgres:5432/gvmd?application_name=gvmd" \
