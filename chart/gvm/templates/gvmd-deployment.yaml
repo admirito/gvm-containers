@@ -62,7 +62,7 @@ spec:
         - name: {{ .Chart.Name }}-openvassd-connector
           image: "{{ tpl .Values.image.socat.registry . }}/{{ tpl .Values.image.socat.repository . }}:{{ tpl .Values.image.socat.tag . }}"
           imagePullPolicy: {{ .Values.image.socat.pullPolicy }}
-          args: ["-d", "-d", "UNIX-LISTEN:/var/run/openvassd.sock,fork", "TCP4-CONNECT:{{ .Release.Name }}-openvassd:9391"]
+          args: ["-d", "-d", "UNIX-LISTEN:/var/run/openvassd.sock,fork", "TCP4-CONNECT:{{ include "gvm.fullname" . }}-openvassd:9391"]
           volumeMounts:
             - name: run-dir
               mountPath: /var/run

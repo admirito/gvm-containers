@@ -27,7 +27,7 @@ spec:
           imagePullPolicy: {{ .Values.image.gsad.pullPolicy }}
           env:
             - name: GVMD_HOST
-              value: {{ .Release.Name }}-gvmd
+              value: {{ include "gvm.fullname" . }}-gvmd
           ports:
             - name: gsad
               containerPort: 80
