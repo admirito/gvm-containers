@@ -75,13 +75,19 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: {}
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+resources:
+  gvmd: {}
+  gvmdOpenvassdConnector: {}
+  openvassd: {}
+  openvassdListener: {}
+  openvassdRedisConnector: {}
+  gsad: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
 
 nodeSelector: {}
 

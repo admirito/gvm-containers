@@ -5,6 +5,7 @@ metadata:
   labels:
   {{- $_ := set . "applicationNameSuffix" "openvassd" }}
   {{- include "gvm.labels" . | nindent 4 }}
+  {{- $_ := set . "applicationNameSuffix" "" }}
   {{- if .Values.service.annotations }}
   annotations:
     {{- toYaml .Values.service.annotations | nindent 4 }}

@@ -5,6 +5,7 @@ metadata:
   labels:
   {{- $_ := set . "applicationNameSuffix" "gsad" }}
   {{- include "gvm.labels" . | nindent 4 }}
+  {{- $_ := set . "applicationNameSuffix" "" }}
   annotations:
     "helm.sh/hook": test-success
 spec:

@@ -5,6 +5,7 @@ metadata:
   labels:
   {{- $_ := set . "applicationNameSuffix" "gvmd" }}
   {{- include "gvm.labels" . | nindent 4 }}
+  {{- $_ := set . "applicationNameSuffix" "" }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -58,7 +59,7 @@ spec:
               subPath: {{ include "gvm.dataSubPathPrefix" . }}scap-data
               mountPath: /var/lib/gvm/scap-data
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.resources.gvmd | nindent 12 }}
         - name: {{ .Chart.Name }}-openvassd-connector
           image: "{{ tpl .Values.image.socat.registry . }}/{{ tpl .Values.image.socat.repository . }}:{{ tpl .Values.image.socat.tag . }}"
           imagePullPolicy: {{ .Values.image.socat.pullPolicy }}
@@ -66,6 +67,8 @@ spec:
           volumeMounts:
             - name: run-dir
               mountPath: /var/run
+          resources:
+            {{- toYaml .Values.resources.gvmdOpenvassdConnector | nindent 12 }}
       volumes:
         - name: run-dir
           emptyDir: {}

@@ -5,6 +5,7 @@ metadata:
   labels:
   {{- $_ := set . "applicationNameSuffix" "openvassd" }}
   {{- include "gvm.labels" . | nindent 4 }}
+  {{- $_ := set . "applicationNameSuffix" "" }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -34,7 +35,7 @@ spec:
               subPath: {{ include "gvm.dataSubPathPrefix" . }}plugins
               mountPath: /var/lib/openvas/plugins
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.resources.openvassd | nindent 12 }}
         - name: {{ .Chart.Name }}-openvassd-listener
           image: "{{ tpl .Values.image.socat.registry . }}/{{ tpl .Values.image.socat.repository . }}:{{ tpl .Values.image.socat.tag . }}"
           imagePullPolicy: {{ .Values.image.socat.pullPolicy }}
@@ -52,6 +53,8 @@ spec:
           volumeMounts:
             - name: run-dir
               mountPath: /var/run
+          resources:
+            {{- toYaml .Values.resources.openvassdListener | nindent 12 }}
         - name: {{ .Chart.Name }}-redis-connector
           image: "{{ tpl .Values.image.socat.registry . }}/{{ tpl .Values.image.socat.repository . }}:{{ tpl .Values.image.socat.tag . }}"
           imagePullPolicy: {{ .Values.image.socat.pullPolicy }}
@@ -61,6 +64,8 @@ spec:
               mountPath: /var/run
             - name: redis-socket-dir
               mountPath: /var/run/redis
+          resources:
+            {{- toYaml .Values.resources.openvassdRedisConnector | nindent 12 }}
       volumes:
         - name: run-dir
           emptyDir: {}

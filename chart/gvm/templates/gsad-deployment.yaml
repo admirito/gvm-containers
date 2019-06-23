@@ -5,6 +5,7 @@ metadata:
   labels:
   {{- $_ := set . "applicationNameSuffix" "gsad" }}
   {{- include "gvm.labels" . | nindent 4 }}
+  {{- $_ := set . "applicationNameSuffix" "" }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -41,7 +42,7 @@ spec:
               path: /
               port: gsad
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.resources.gsad | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
