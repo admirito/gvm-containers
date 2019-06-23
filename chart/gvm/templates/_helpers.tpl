@@ -74,6 +74,6 @@ The prefix for subPath values in volumeMounts
 */}}
 {{- define "gvm.dataSubPathPrefix" -}}
 {{- if .Values.dataSubPathPrefix }}
-{{- printf "%s/" .Values.dataSubPathPrefix -}}
+{{- printf "%s/" (tpl .Values.dataSubPathPrefix .) -}}
 {{- end }}
 {{- end -}}
