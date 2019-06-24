@@ -5,19 +5,19 @@ metadata:
   labels:
   {{- $_ := set . "applicationNameSuffix" "gvmd" }}
   {{- include "gvm.labels" . | nindent 4 }}
-  {{- if .Values.service.annotations }}
+  {{- if .Values.gvmdService.annotations }}
   annotations:
-    {{- toYaml .Values.service.annotations | nindent 4 }}
+    {{- toYaml .Values.gvmdService.annotations | nindent 4 }}
   {{- end }}
 spec:
-  type: {{ .Values.service.type }}
-  clusterIP: "{{ .Values.service.clusterIP }}"
+  type: {{ .Values.gvmdService.type }}
+  clusterIP: "{{ .Values.gvmdService.clusterIP }}"
   ports:
     - name: gvmd
       port: {{ .Values.gvmdService.port }}
       targetPort: gvmd
       protocol: TCP
-      {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.gvmdService.nodePort))) }}
+      {{- if (and (eq .Values.gvmdService.type "NodePort") (not (empty .Values.gvmdService.nodePort))) }}
       nodePort: {{ .Values.gvmdService.nodePort }}
       {{- end }}
   {{- if .Values.gvmdService.externalIPs }}

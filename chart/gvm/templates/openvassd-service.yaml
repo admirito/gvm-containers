@@ -6,19 +6,19 @@ metadata:
   {{- $_ := set . "applicationNameSuffix" "openvassd" }}
   {{- include "gvm.labels" . | nindent 4 }}
   {{- $_ := set . "applicationNameSuffix" "" }}
-  {{- if .Values.service.annotations }}
+  {{- if .Values.openvassdService.annotations }}
   annotations:
-    {{- toYaml .Values.service.annotations | nindent 4 }}
+    {{- toYaml .Values.openvassdService.annotations | nindent 4 }}
   {{- end }}
 spec:
-  type: {{ .Values.service.type }}
-  clusterIP: "{{ .Values.service.clusterIP }}"
+  type: {{ .Values.openvassdService.type }}
+  clusterIP: "{{ .Values.openvassdService.clusterIP }}"
   ports:
     - name: openvassd
       port: {{ .Values.openvassdService.port }}
       targetPort: openvassd
       protocol: TCP
-      {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.openvassdService.nodePort))) }}
+      {{- if (and (eq .Values.openvassdService.type "NodePort") (not (empty .Values.openvassdService.nodePort))) }}
       nodePort: {{ .Values.openvassdService.nodePort }}
       {{- end }}
   {{- if .Values.openvassdService.externalIPs }}
