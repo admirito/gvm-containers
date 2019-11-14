@@ -1,21 +1,21 @@
 gvmd:
-  image: admirito/gvmd:10
+  image: admirito/gvmd:11
   links:
     - gvm-postgres
   environment:
     GVMD_POSTGRESQL_URI: 'postgresql://gvmduser:mypassword@gvm-postgres:5432/gvmd?application_name=gvmd'
   volumes_from:
-    - openvassd
+    - openvas
 
 gvm-postgres:
-  image: admirito/gvm-postgres:10
+  image: admirito/gvm-postgres:11
   environment:
     POSTGRES_USER: 'gvmduser'
     POSTGRES_PASSWORD: 'mypassword'
     POSTGRES_DB: 'gvmd'
 
-openvassd:
-  image: admirito/openvassd:10
+openvas:
+  image: admirito/openvas:11
   volumes:
     - /var/run
 
@@ -23,10 +23,10 @@ redis:
   image: redis:5.0
   command: redis-server --port 0 --unixsocket /var/run/redis/redis.sock --unixsocketperm 755
   volumes_from:
-    - openvassd
+    - openvas
 
 gsad:
-  image: admirito/gsad:10
+  image: admirito/gsad:11
   links:
     - gvmd
   environment:
@@ -34,13 +34,13 @@ gsad:
     GVMD_PORT: '9390'
 
 # cert-scap-sync:
-#   image: admirito/gvmd:10
+#   image: admirito/gvmd:11
 #   command: sh -c "greenbone-certdata-sync; sleep 3; greenbone-scapdata-sync"
 #   volumes_from:
 #     - gvmd
 
 # nvt-sync:
-#   image: admirito/openvassd:10
+#   image: admirito/openvas:11
 #   command: greenbone-nvt-sync
 #   volumes_from:
-#     - openvassd
+#     - openvas
