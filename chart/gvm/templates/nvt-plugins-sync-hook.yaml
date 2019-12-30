@@ -18,8 +18,8 @@ spec:
       restartPolicy: Never
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ tpl .Values.image.openvassd.registry . }}/{{ tpl .Values.image.openvassd.repository . }}:{{ tpl .Values.image.openvassd.tag . }}"
-          imagePullPolicy: {{ .Values.image.openvassd.pullPolicy }}
+          image: "{{ tpl .Values.image.openvas.registry . }}/{{ tpl .Values.image.openvas.repository . }}:{{ tpl .Values.image.openvas.tag . }}"
+          imagePullPolicy: {{ .Values.image.openvas.pullPolicy }}
           command: ["greenbone-nvt-sync"]
           volumeMounts:
             - name: data-volume

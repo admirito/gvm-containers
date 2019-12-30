@@ -14,24 +14,24 @@ replicaCount: 1
 #     tag: "{{ .Values.global.gvmImageTag }}"
 #   gsad:
 #     tag: "{{ .Values.global.gvmImageTag }}"
-#   openvassd:
+#   openvas:
 #     tag: "{{ .Values.global.gvmImageTag }}"
   
 image:
   gvmd:
     registry: "docker.io"
     repository: "admirito/gvmd"
-    tag: "10"
+    tag: "11"
     pullPolicy: IfNotPresent
   gsad:
     registry: "docker.io"
     repository: "admirito/gsad"
-    tag: "10"
+    tag: "11"
     pullPolicy: IfNotPresent
-  openvassd:
+  openvas:
     registry: "docker.io"
-    repository: "admirito/openvassd"
-    tag: "10"
+    repository: "admirito/openvas"
+    tag: "11"
     pullPolicy: IfNotPresent
   socat:
     registry: "docker.io"
@@ -52,7 +52,7 @@ gvmdService:
   type: ClusterIP
   port: 9390
 
-openvassdService:
+openvasService:
   type: ClusterIP
   port: 9391
 
@@ -77,10 +77,10 @@ ingress:
 
 resources:
   gvmd: {}
-  gvmdOpenvassdConnector: {}
-  openvassd: {}
-  openvassdListener: {}
-  openvassdRedisConnector: {}
+  gvmdOpenvasConnector: {}
+  openvas: {}
+  openvasListener: {}
+  openvasRedisConnector: {}
   gsad: {}
     # limits:
     #   cpu: 100m
@@ -102,12 +102,12 @@ syncNvtPluginsAfterInstall: true
 syncScapCertDataAfterInstall: false
 
 # the value of dataSubPathPrefix will be used as the prefix for
-# subPath in volumeMounts of gvmd/openvassd deployments for the
+# subPath in volumeMounts of gvmd/openvas deployments for the
 # persistent volume specified by persistence parameters
 dataSubPathPrefix: ""
 
 # This is data persistence for nasl plugins / scap data / cert
-# data. For database persistence see gvmd-db and openvassd-redis.
+# data. For database persistence see gvmd-db and openvas-redis.
 persistence:
   # It is highly recommended not to disable the
   # persistence. Without enabling a persistent volume
@@ -142,7 +142,7 @@ gvmd-db:
   #persistence:
   #  existingClaim:
 
-openvassd-redis:
+openvas-redis:
   image:
     # You can override this one, or global.imageRegistry
     registry: "docker.io"

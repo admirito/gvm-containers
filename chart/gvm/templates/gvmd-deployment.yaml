@@ -49,6 +49,8 @@ spec:
           volumeMounts:
             - name: run-dir
               mountPath: /var/run
+            - name: ospd-socket-dir
+              mountPath: /var/run/ospd
             - name: data-volume
               subPath: {{ include "gvm.dataSubPathPrefix" . }}plugins
               mountPath: /var/lib/openvas/plugins
@@ -60,17 +62,21 @@ spec:
               mountPath: /var/lib/gvm/scap-data
           resources:
             {{- toYaml .Values.resources.gvmd | nindent 12 }}
-        - name: {{ .Chart.Name }}-openvassd-connector
+        - name: {{ .Chart.Name }}-openvas-connector
           image: "{{ tpl .Values.image.socat.registry . }}/{{ tpl .Values.image.socat.repository . }}:{{ tpl .Values.image.socat.tag . }}"
           imagePullPolicy: {{ .Values.image.socat.pullPolicy }}
-          args: ["-d", "-d", "UNIX-LISTEN:/var/run/openvassd.sock,fork", "TCP4-CONNECT:{{ include "gvm.fullname" . }}-openvassd:9391"]
+          args: ["-d", "-d", "UNIX-LISTEN:/var/run/ospd/ospd.sock,fork", "TCP4-CONNECT:{{ include "gvm.fullname" . }}-openvas:9391"]
           volumeMounts:
             - name: run-dir
               mountPath: /var/run
+            - name: ospd-socket-dir
+              mountPath: /var/run/ospd
           resources:
-            {{- toYaml .Values.resources.gvmdOpenvassdConnector | nindent 12 }}
+            {{- toYaml .Values.resources.gvmdOpenvasConnector | nindent 12 }}
       volumes:
         - name: run-dir
+          emptyDir: {}
+        - name: ospd-socket-dir
           emptyDir: {}
         - name: data-volume
           {{- if .Values.persistence.enabled }}

@@ -7,4 +7,4 @@ dependencies:
   - name: redis
     version: ~8.0.8
     repository: '@stable'
-    alias: openvassd-redis
+    alias: openvas-redis

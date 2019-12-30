@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "gvm.fullname" . }}-openvas
+  labels:
+  {{- $_ := set . "applicationNameSuffix" "openvas" }}
+  {{- include "gvm.labels" . | nindent 4 }}
+  {{- $_ := set . "applicationNameSuffix" "" }}
+  {{- if .Values.openvasService.annotations }}
+  annotations:
+    {{- toYaml .Values.openvasService.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.openvasService.type }}
+  clusterIP: "{{ .Values.openvasService.clusterIP }}"
+  ports:
+    - name: openvas
+      port: {{ .Values.openvasService.port }}
+      targetPort: openvas
+      protocol: TCP
+      {{- if (and (eq .Values.openvasService.type "NodePort") (not (empty .Values.openvasService.nodePort))) }}
+      nodePort: {{ .Values.openvasService.nodePort }}
+      {{- end }}
+  {{- if .Values.openvasService.externalIPs }}
+  externalIPs:
+    {{- toYaml .Values.openvasService.externalIPs | nindent 4 }}
+  {{- end }}
+  {{- if .Values.openvasService.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.openvasService.loadBalancerIP }}"
+  {{- end }}
+  {{- if .Values.openvasService.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- toYaml .Values.openvasService.loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "gvm.name" . }}-openvas
+    app.kubernetes.io/instance: {{ include "gvm.instance" . }}
