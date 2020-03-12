@@ -10,7 +10,7 @@ RUN set -ex; \
     DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends ospd-openvas openvas python3-pkg-resources rsync wget openvas-smb nmap; \
     sed -i 's|/var/log/gvm/openvas.log|/dev/stdout|g' /etc/openvas/openvas_log.conf; \
     sed -i 's/if \[ "`id -u`" -eq "0" \]/if fasle \&\& [ "`id -u`" -eq "0" ]/' /usr/bin/greenbone-nvt-sync; \
-    apt-get --only-upgrade install python3-redis \
+    apt-get --only-upgrade install python3-redis; \
     rm -rf /var/lib/apt/lists/*
 
 VOLUME /var/lib/openvas \
