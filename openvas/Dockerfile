@@ -13,10 +13,17 @@ RUN set -ex; \
     apt-get --only-upgrade install python3-redis; \
     rm -rf /var/lib/apt/lists/*
 
+# Add Tini
+ARG TINI_VERSION="v0.18.0"
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+
+
 VOLUME /var/lib/openvas \
        /var/run/redis
 
 COPY docker-entrypoint.sh /usr/local/bin/
-ENTRYPOINT ["docker-entrypoint.sh"]
+#ENTRYPOINT ["docker-entrypoint.sh"]
+ENTRYPOINT ["/tini", "--", "bash", "/usr/local/bin/docker-entrypoint.sh" ]
 
 CMD ["ospd-openvas", "-l/dev/stdout", "-f"]
