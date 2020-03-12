@@ -1,46 +1,119 @@
-gvmd:
-  image: admirito/gvmd:11
-  links:
-    - gvm-postgres
-  environment:
-    GVMD_POSTGRESQL_URI: 'postgresql://gvmduser:mypassword@gvm-postgres:5432/gvmd?application_name=gvmd'
-  volumes_from:
-    - openvas
+version: '2.1'
+volumes:
+  redis-data: {}
+  openvas-var-lib: {}
+  gvm-var-lib: {}
+  postgres-data: {}
+  run-redis: {}
+  run-ospd: {}
 
-gvm-postgres:
-  image: admirito/gvm-postgres:11
-  environment:
-    POSTGRES_USER: 'gvmduser'
-    POSTGRES_PASSWORD: 'mypassword'
-    POSTGRES_DB: 'gvmd'
 
-openvas:
-  image: admirito/openvas:11
-  volumes:
-    - /var/run
+services:
+  gvm-postgres:
+    image: admirito/gvm-postgres:11
+    environment:
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_DB: gvmd
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_USER: gvmduser
+    stdin_open: true
+    volumes:
+    - postgres-data:/var/lib/postgresql/data
 
-redis:
-  image: redis:5.0
-  command: redis-server --port 0 --unixsocket /var/run/redis/redis.sock --unixsocketperm 755
-  volumes_from:
-    - openvas
+  gvmd:
+    #  CONNECTED     9598310  /var/run/ospd/ospd.sock
+    image: admirito/gvmd:11
+    environment:
+      GVMD_POSTGRESQL_URI: postgresql://gvmduser:mypassword@gvm-postgres:5432/gvmd?application_name=gvmd
+    volumes:
+    - openvas-var-lib:/var/lib/openvas
+    - gvm-var-lib:/var/lib/gvm
+    - run-redis:/var/run/redis
+    - run-ospd:/var/run/ospd
+    depends_on:
+      postgres:
+        condition: gvm-postgres
 
-gsad:
-  image: admirito/gsad:11
-  links:
-    - gvmd
-  environment:
-    GVMD_HOST: 'gvmd'
-    GVMD_PORT: '9390'
+  gsad:
+    image: admirito/gsad:11
+    ports:
+    - 8080:80
 
-# cert-scap-sync:
-#   image: admirito/gvmd:11
-#   command: sh -c "greenbone-certdata-sync; sleep 3; greenbone-scapdata-sync"
-#   volumes_from:
-#     - gvmd
+    environment:
+      GVMD_HOST: gvmd
+      GVMD_PORT: '9390'
 
-# nvt-sync:
-#   image: admirito/openvas:11
-#   command: greenbone-nvt-sync
-#   volumes_from:
-#     - openvas
+    depends_on:
+      postgres:
+        condition: gvmd
+
+  openvas:
+    # LISTENING     9431657  /var/run/ospd/ospd.sock
+    # CONNECTED     9499517  /var/run/redis/redis.sock
+    image: admirito/openvas:11
+    environment:
+      OV_PASSWORD: Securepassword41
+    privileged: true
+    sysctls:
+      net.core.somaxconn: '2048'
+    volumes:
+    - openvas-var-lib:/var/lib/openvas
+    - run-redis:/var/run/redis
+    - run-ospd:/var/run/ospd
+    depends_on:
+      postgres:
+        condition: gvmd
+
+
+
+# on node must  add     vm.overcommit_memory=1 into /etc/systcl.conf
+  redis:
+    # LISTENING     9418817  /var/run/redis/redis.sock
+    image: redis:5.0
+    volumes:
+    - run-redis:/var/run/redis
+    - redis-data:/data
+    command: redis-server --port 0 --unixsocket /var/run/redis/redis.sock --unixsocketperm 755
+    privileged: true
+    sysctls:
+      net.core.somaxconn: '2048'
+    depends_on:
+      postgres:
+        condition: openvas
+
+
+#  cert-sync:
+#    image: admirito/gvmd:11
+#    volumes:
+#    - openvas-var-lib:/var/lib/openvas
+#    - gvm-var-lib:/var/lib/gvm
+#    - run-redis:/var/run/redis
+#    - run-ospd:/var/run/ospd
+#    command: greenbone-certdata-sync --curl --verbose
+#    depends_on:
+#      postgres:
+#        condition: gvmd
+
+#  scap-sync:
+#    image: admirito/gvmd:11
+#    volumes:
+#    - openvas-var-lib:/var/lib/openvas
+#    - gvm-var-lib:/var/lib/gvm
+#    - run-redis:/var/run/redis
+#    - run-ospd:/var/run/ospd
+#    command: greenbone-scapdata-sync --curl --verbose
+#    depends_on:
+#      postgres:
+#        condition: gvmd
+
+
+#  nvt-sync:
+#    image: admirito/openvas:11
+#    volumes:
+#    - openvas-var-lib:/var/lib/openvas
+#    - run-redis:/var/run/redis
+#    - run-ospd:/var/run/ospd
+#    command: greenbone-nvt-sync
+#    depends_on:
+#      postgres:
+#        condition: gvmd
