@@ -22,7 +22,7 @@ if [ "$1" = 'ospd-openvas' ]; then
     rm -f /var/run/ospd.pid
 
     if [ -z "${SKIP_WAIT_REDIS}" ]; then
-	echo "waiting for the reids..."
+	echo "waiting for the redis..."
 	while [ ! -e /var/run/redis/redis.sock ]; do
 	    sleep 1;
 	done
