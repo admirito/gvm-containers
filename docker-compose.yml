@@ -51,8 +51,6 @@ services:
     # LISTENING     9431657  /var/run/ospd/ospd.sock
     # CONNECTED     9499517  /var/run/redis/redis.sock
     image: admirito/openvas:11
-    environment:
-      OV_PASSWORD: Securepassword41
     privileged: true
     sysctls:
       net.core.somaxconn: '2048'
