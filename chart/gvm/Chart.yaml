@@ -1,7 +1,7 @@
-apiVersion: v1
+apiVersion: v2
 name: gvm
 version: 0.1.0
-appVersion: "10.0.0"
+appVersion: "11.0.0"
 description: The Greenbone Vulnerability Management Solution (previously known as Open Vulnerability Assessment System) i.e. a remote network security auditing tool
 keywords:
   - gvm
@@ -14,3 +14,12 @@ sources:
 maintainers:
   - name: Mohammad Razavi
     twitter: "@admirito"
+dependencies:
+  - name: postgresql
+    version: ~8.6.4
+    repository: '@stable'
+    alias: gvmd-db
+  - name: redis
+    version: ~10.5.7
+    repository: '@stable'
+    alias: openvas-redis

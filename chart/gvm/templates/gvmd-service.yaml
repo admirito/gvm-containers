@@ -11,7 +11,9 @@ metadata:
   {{- end }}
 spec:
   type: {{ .Values.gvmdService.type }}
-  clusterIP: "{{ .Values.gvmdService.clusterIP }}"
+  {{- if and .Values.gvmdService.clusterIP (eq .Values.gvmdService.type "ClusterIP") }}
+  clusterIP: {{ .Values.gvmdService.clusterIP }}
+  {{- end }}
   ports:
     - name: gvmd
       port: {{ .Values.gvmdService.port }}
