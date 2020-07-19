@@ -10,6 +10,7 @@ if [ "$1" = 'ospd-openvas' ]; then
     chmod -R 777 /var/run/redis/
 
     rm -f /var/run/ospd.pid
+    mkdir /var/run/ospd
 
     if [ -z "${SKIP_WAIT_REDIS}" ]; then
 	echo "waiting for the reids..."
