@@ -11,8 +11,8 @@ images:
 - [[https://hub.docker.com/r/admirito/gvmd][gvmd]]: Greenbone Vulnerability Manager
 - [[https://hub.docker.com/r/admirito/openvas][openvas]]: OpenVAS remote network security scanner
 - [[https://hub.docker.com/r/admirito/gsad][gsad]]: Greenbone Security Assistant
-- [[https://hub.docker.com/r/admirito/gvm-postgres][gvm-postgres]]: PostgreSQL 10 Dataabase with "uuid-ossp" extension to
-  be used by gvmd
+- [[https://hub.docker.com/r/admirito/gvm-postgres][gvm-postgres]]: PostgreSQL 12 Dataabase with libgvm-pg-server
+  extension to be used by gvmd
 To setup the GVM system with =docker-compose=, just clone the repo and
 issue =docker-compose up= command:
 
@@ -22,11 +22,15 @@ git clone https://github.com/admirito/gvm-containers.git
 
 cd gvm-containers
 
-docker-compose up
+docker-compose -f docker-compose.yml -f nvt-sync.yml -f cert-sync.yml -f scap-sync.yml up
 #+END_SRC
 
-You can uncomment the =cert-scap-sync= and =nvt-sync= containers from
-the =docker-compose.yml= file to synchronize NVT/CERT/SCAP data.
+You can add/remove the =-f ...-sync.yml= arguments from the
+=docker-compose= command to enable/disable synchronize NVT/CERT/SCAP
+data.
+
+The Greenbone Security Assistant =gsad= port is exposed on the
+host's port 8080. So you can access it from [[http://localhost:8080]].
 
 ** Helm Chart
 A helm chart for deploying the docker images on kubernetes is also

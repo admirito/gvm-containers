@@ -1,0 +1,14 @@
+version: '2.1'
+
+services:
+  nvt-sync:
+    image: admirito/openvas:11
+    volumes:
+      - openvas-var-lib:/var/lib/openvas
+      - run-redis:/var/run/redis
+      - run-ospd:/var/run/ospd
+    command: greenbone-nvt-sync
+
+    depends_on:
+      gvmd:
+        condition: service_started
