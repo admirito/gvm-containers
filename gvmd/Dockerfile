@@ -12,7 +12,7 @@ RUN set -ex; \
     cd /; \
     apt download openvas; \
     dpkg --fsys-tarfile openvas_*.deb | tar xf - ./usr/bin/greenbone-nvt-sync; \
-    sed -i 's/if \[ "`id -u`" -eq "0" \]/if fasle \&\& [ "`id -u`" -eq "0" ]/' /usr/bin/greenbone-nvt-sync; \
+    sed -i 's/if \[ "`id -u`" -eq "0" \]/if fasle \&\& [ "`id -u`" -eq "0" ]/' /usr/bin/greenbone-nvt-sync --rsync; \
     rm -rf ./openvas_*.deb; \
     rm -rf /var/lib/apt/lists/*
 
