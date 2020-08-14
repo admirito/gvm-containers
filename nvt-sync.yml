@@ -7,7 +7,7 @@ services:
       - openvas-var-lib:/var/lib/openvas
       - run-redis:/var/run/redis
       - run-ospd:/var/run/ospd
-    command: greenbone-nvt-sync
+    command: greenbone-nvt-sync --rsync
 
     depends_on:
       gvmd:
