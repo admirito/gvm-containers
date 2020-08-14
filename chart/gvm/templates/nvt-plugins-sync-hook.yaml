@@ -20,7 +20,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ tpl .Values.image.openvas.registry . }}/{{ tpl .Values.image.openvas.repository . }}:{{ tpl .Values.image.openvas.tag . }}"
           imagePullPolicy: {{ .Values.image.openvas.pullPolicy }}
-          command: ["greenbone-nvt-sync"]
+          command: ["greenbone-nvt-sync --rsync"]
           volumeMounts:
             - name: data-volume
               subPath: {{ include "gvm.dataSubPathPrefix" . }}plugins
