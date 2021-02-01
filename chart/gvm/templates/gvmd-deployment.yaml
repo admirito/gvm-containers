@@ -25,7 +25,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ tpl .Values.image.gvmd.registry . }}/{{ tpl .Values.image.gvmd.repository . }}:{{ tpl .Values.image.gvmd.tag . }}"
-          imagePullPolicy: {{ .Values.image.gvmd.pullPolicy }}
+          imagePullPolicy: {{ tpl .Values.image.gvmd.pullPolicy . }}
           env:
             - name: GVMD_POSTGRESQL_HOST
               value: {{ .Release.Name }}-gvmd-db
@@ -64,7 +64,7 @@ spec:
             {{- toYaml .Values.resources.gvmd | nindent 12 }}
         - name: {{ .Chart.Name }}-openvas-connector
           image: "{{ tpl .Values.image.socat.registry . }}/{{ tpl .Values.image.socat.repository . }}:{{ tpl .Values.image.socat.tag . }}"
-          imagePullPolicy: {{ .Values.image.socat.pullPolicy }}
+          imagePullPolicy: {{ tpl .Values.image.socat.pullPolicy . }}
           args: ["-d", "-d", "UNIX-LISTEN:/var/run/ospd/ospd.sock,fork", "TCP4-CONNECT:{{ include "gvm.fullname" . }}-openvas:9391"]
           volumeMounts:
             - name: run-dir

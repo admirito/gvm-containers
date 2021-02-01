@@ -25,7 +25,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ tpl .Values.image.gsad.registry . }}/{{ tpl .Values.image.gsad.repository . }}:{{ tpl .Values.image.gsad.tag . }}"
-          imagePullPolicy: {{ .Values.image.gsad.pullPolicy }}
+          imagePullPolicy: {{ tpl .Values.image.gsad.pullPolicy . }}
           env:
             - name: GVMD_HOST
               value: {{ include "gvm.fullname" . }}-gvmd

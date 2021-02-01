@@ -25,7 +25,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ tpl .Values.image.openvas.registry . }}/{{ tpl .Values.image.openvas.repository . }}:{{ tpl .Values.image.openvas.tag . }}"
-          imagePullPolicy: {{ .Values.image.openvas.pullPolicy }}
+          imagePullPolicy: {{ tpl .Values.image.openvas.pullPolicy . }}
           volumeMounts:
             - name: run-dir
               mountPath: /var/run
@@ -38,7 +38,7 @@ spec:
             {{- toYaml .Values.resources.openvas | nindent 12 }}
         - name: {{ .Chart.Name }}-openvas-listener
           image: "{{ tpl .Values.image.socat.registry . }}/{{ tpl .Values.image.socat.repository . }}:{{ tpl .Values.image.socat.tag . }}"
-          imagePullPolicy: {{ .Values.image.socat.pullPolicy }}
+          imagePullPolicy: {{ tpl .Values.image.socat.pullPolicy . }}
           args: ["-d", "-d", "TCP4-LISTEN:9391,fork", "UNIX-CONNECT:/var/run/ospd/ospd.sock"]
           ports:
             - name: openvas
@@ -57,7 +57,7 @@ spec:
             {{- toYaml .Values.resources.openvasListener | nindent 12 }}
         - name: {{ .Chart.Name }}-redis-connector
           image: "{{ tpl .Values.image.socat.registry . }}/{{ tpl .Values.image.socat.repository . }}:{{ tpl .Values.image.socat.tag . }}"
-          imagePullPolicy: {{ .Values.image.socat.pullPolicy }}
+          imagePullPolicy: {{ tpl .Values.image.socat.pullPolicy . }}
           args: ["-d", "-d", "UNIX-LISTEN:/var/run/redis/redis.sock,fork", "TCP4-CONNECT:{{ .Release.Name }}-openvas-redis-master:6379"]
           volumeMounts:
             - name: run-dir

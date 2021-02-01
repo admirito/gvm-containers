@@ -19,7 +19,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ tpl .Values.image.gvmd.registry . }}/{{ tpl .Values.image.gvmd.repository . }}:{{ tpl .Values.image.gvmd.tag . }}"
-          imagePullPolicy: {{ .Values.image.gvmd.pullPolicy }}
+          imagePullPolicy: {{ tpl .Values.image.gvmd.pullPolicy . }}
           command: ["sh", "-c", "greenbone-certdata-sync; sleep 3; greenbone-scapdata-sync; true"]
           volumeMounts:
             - name: data-volume
