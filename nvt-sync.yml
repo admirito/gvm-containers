@@ -1,14 +1,15 @@
 version: '2.1'
 
+volumes:
+  openvas-var-lib: {}
+  run-gvm: {}
+
 services:
   nvt-sync:
-    image: admirito/openvas:11
+    image: admirito/openvas:20
     volumes:
       - openvas-var-lib:/var/lib/openvas
-      - run-redis:/var/run/redis
-      - run-ospd:/var/run/ospd
+      - run-gvm:/run/gvm
     command: greenbone-nvt-sync
-
-    depends_on:
-      gvmd:
-        condition: service_started
+    # environment:
+    #   COMMUNITY_NVT_RSYNC_FEED: "rsync://feed.community.greenbone.net:/nvt-feed"

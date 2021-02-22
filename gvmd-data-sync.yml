@@ -10,6 +10,6 @@ services:
     volumes:
       - gvm-var-lib:/var/lib/gvm
       - run-gvm:/run/gvm
-    command: greenbone-feed-sync --type CERT
+    command: greenbone-feed-sync --type GVMD_DATA
     # environment:
-    #   COMMUNITY_CERT_RSYNC_FEED: "rsync://feed.community.greenbone.net:/cert-data"
+    #   COMMUNITY_GVMD_DATA_RSYNC_FEED: "rsync://feed.community.greenbone.net:/data-objects/gvmd/"

@@ -3,9 +3,10 @@
 This is the Git repo of the tools to deploy Greenbone Vulnerability
 Management with containers. It is based on the [[https://community.greenbone.net/c/gse][Greenbone Source
 Edition (GSE)]] open source project.
+
 ** Docker
 The source code of [[https://hub.docker.com/u/admirito][admirito]]'s unofficial docker images for Greenbone
-Vulnerability Management 11--which is based on [[https://launchpad.net/~mrazavi/+archive/ubuntu/gvm][admirito's GVM PPA]]--is
+Vulnerability Management 20--which is based on [[https://launchpad.net/~mrazavi/+archive/ubuntu/gvm][admirito's GVM PPA]]--is
 hosted on this repo. It contains the source for the following docker
 images:
 - [[https://hub.docker.com/r/admirito/gvmd][gvmd]]: Greenbone Vulnerability Manager
@@ -13,21 +14,32 @@ images:
 - [[https://hub.docker.com/r/admirito/gsad][gsad]]: Greenbone Security Assistant
 - [[https://hub.docker.com/r/admirito/gvm-postgres][gvm-postgres]]: PostgreSQL 12 Dataabase with libgvm-pg-server
   extension to be used by gvmd
-To setup the GVM system with =docker-compose=, just clone the repo and
-issue =docker-compose up= command:
 
-#+NAME: setup GVM with docker-compose
+To setup the GVM system with =docker-compose=, first clone the repo and
+issue =docker-compose up= commands to download and synchronize the data
+feeds required by the GVM:
+
+#+NAME: synchronize data feeds
 #+BEGIN_SRC shell
 git clone https://github.com/admirito/gvm-containers.git
 
 cd gvm-containers
 
-docker-compose -f docker-compose.yml -f nvt-sync.yml -f cert-sync.yml -f scap-sync.yml up
+docker-compose -f nvt-sync.yml up
+docker-compose -f cert-sync.yml up
+docker-compose -f scap-sync.yml up
+docker-compose -f gvmd-data-sync.yml up
 #+END_SRC
 
-You can add/remove the =-f ...-sync.yml= arguments from the
-=docker-compose= command to enable/disable synchronize NVT/CERT/SCAP
-data.
+Then, you can run GVM services with a simple =docker-compose up=
+command. The initialization process can take a few minutes for the
+first time:
+
+#+NAME: run GVM with docker-compose
+#+BEGIN_SRC shell
+# in the gvm-containers directory
+docker-compose up
+#+END_SRC
 
 The Greenbone Security Assistant =gsad= port is exposed on the
 host's port 8080. So you can access it from [[http://localhost:8080]].

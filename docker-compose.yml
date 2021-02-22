@@ -7,10 +7,11 @@ volumes:
   postgres-data: {}
   run-redis: {}
   run-ospd: {}
+  run-gvm: {}
 
 services:
   gvm-postgres:
-    image: admirito/gvm-postgres:11
+    image: admirito/gvm-postgres:20
     environment:
       PGDATA: /var/lib/postgresql/data
       POSTGRES_DB: gvmd
@@ -21,7 +22,7 @@ services:
 
   gvmd:
     # CONNECTED /var/run/ospd/ospd.sock
-    image: admirito/gvmd:11
+    image: admirito/gvmd:20
     environment:
       GVMD_POSTGRESQL_URI: postgresql://gvmduser:mypassword@gvm-postgres:5432/gvmd?application_name=gvmd
     volumes:
@@ -29,12 +30,15 @@ services:
       - gvm-var-lib:/var/lib/gvm
       - run-redis:/var/run/redis
       - run-ospd:/var/run/ospd
+      - run-gvm:/run/gvm
     depends_on:
       gvm-postgres:
         condition: service_started
 
   gsad:
-    image: admirito/gsad:11
+    image: admirito/gsad:20
+    volumes:
+      - run-gvm:/run/gvm
     ports:
       - 8080:80
     
@@ -49,7 +53,7 @@ services:
   openvas:
     # LISTENING /var/run/ospd/ospd.sock
     # CONNECTED /var/run/redis/redis.sock
-    image: admirito/openvas:11
+    image: admirito/openvas:20
     privileged: true
     sysctls:
       net.core.somaxconn: '2048'

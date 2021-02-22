@@ -1,15 +1,15 @@
 version: '2.1'
 
+volumes:
+  gvm-var-lib: {}
+  run-gvm: {}
+
 services:
   scap-sync:
-    image: admirito/gvmd:11
+    image: admirito/gvmd:20
     volumes:
-      - openvas-var-lib:/var/lib/openvas
       - gvm-var-lib:/var/lib/gvm
-      - run-redis:/var/run/redis
-      - run-ospd:/var/run/ospd
-    command: greenbone-scapdata-sync --curl --verbose
-
-    depends_on:
-      gvmd:
-        condition: service_started
+      - run-gvm:/run/gvm
+    command: greenbone-feed-sync --type SCAP
+    # environment:
+    #   COMMUNITY_SCAP_RSYNC_FEED: "rsync://feed.community.greenbone.net:/scap-data"
