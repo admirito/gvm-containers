@@ -1,12 +1,12 @@
-{{- if .Values.syncScapCertDataAfterInstall }}
+{{- if .Values.syncFeedsBeforeInstall }}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "gvm.fullname" . }}-scap-cert-data-sync
+  name: {{ include "gvm.fullname" . }}-feeds-sync
   labels:
   {{- include "gvm.labels" . | nindent 4 }}
   annotations:
-    helm.sh/hook: post-install
+    helm.sh/hook: pre-install
     helm.sh/hook-weight: "0"
     helm.sh/hook-delete-policy: hook-succeeded,before-hook-creation
 spec:
@@ -20,15 +20,29 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ tpl .Values.image.gvmd.registry . }}/{{ tpl .Values.image.gvmd.repository . }}:{{ tpl .Values.image.gvmd.tag . }}"
           imagePullPolicy: {{ tpl .Values.image.gvmd.pullPolicy . }}
-          command: ["sh", "-c", "greenbone-certdata-sync; sleep 3; greenbone-scapdata-sync; true"]
+          command: ["/bin/sh"]
+          args:
+            - "-cex"
+            - |
+              greenbone-nvt-sync
+              greenbone-feed-sync --type CERT
+              greenbone-feed-sync --type SCAP
+              greenbone-feed-sync --type GVMD_DATA
           volumeMounts:
+            - name: run-dir
+              mountPath: /run
+            - name: run-dir
+              subPath: gvm
+              mountPath: /run/gvm
             - name: data-volume
-              subPath: {{ include "gvm.dataSubPathPrefix" . }}cert-data
-              mountPath: /var/lib/gvm/cert-data
+              subPath: {{ include "gvm.dataSubPathPrefix" . }}openvas
+              mountPath: /var/lib/openvas
             - name: data-volume
-              subPath: {{ include "gvm.dataSubPathPrefix" . }}scap-data
-              mountPath: /var/lib/gvm/scap-data
+              subPath: {{ include "gvm.dataSubPathPrefix" . }}gvm
+              mountPath: /var/lib/gvm
       volumes:
+        - name: run-dir
+          emptyDir: {}
         - name: data-volume
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:

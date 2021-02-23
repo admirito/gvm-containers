@@ -48,35 +48,40 @@ spec:
               port: gvmd
           volumeMounts:
             - name: run-dir
-              mountPath: /var/run
-            - name: ospd-socket-dir
-              mountPath: /var/run/ospd
+              mountPath: /run
+            - name: run-dir
+              subPath: gvm
+              mountPath: /run/gvm
+            - name: run-dir
+              subPath: ospd
+              mountPath: /run/ospd
             - name: data-volume
-              subPath: {{ include "gvm.dataSubPathPrefix" . }}plugins
-              mountPath: /var/lib/openvas/plugins
+              subPath: {{ include "gvm.dataSubPathPrefix" . }}openvas
+              mountPath: /var/lib/openvas
             - name: data-volume
-              subPath: {{ include "gvm.dataSubPathPrefix" . }}cert-data
-              mountPath: /var/lib/gvm/cert-data
+              subPath: {{ include "gvm.dataSubPathPrefix" . }}gvm
+              mountPath: /var/lib/gvm
+            # without /var/lib/gvm/gvmd directory, the gvmd will
+            # complain about /var/lib/gvm/gvmd/gnupg/ directory
             - name: data-volume
-              subPath: {{ include "gvm.dataSubPathPrefix" . }}scap-data
-              mountPath: /var/lib/gvm/scap-data
+              subPath: {{ include "gvm.dataSubPathPrefix" . }}gvm/gvmd
+              mountPath: /var/lib/gvm/gvmd
           resources:
             {{- toYaml .Values.resources.gvmd | nindent 12 }}
         - name: {{ .Chart.Name }}-openvas-connector
           image: "{{ tpl .Values.image.socat.registry . }}/{{ tpl .Values.image.socat.repository . }}:{{ tpl .Values.image.socat.tag . }}"
           imagePullPolicy: {{ tpl .Values.image.socat.pullPolicy . }}
-          args: ["-d", "-d", "UNIX-LISTEN:/var/run/ospd/ospd.sock,fork", "TCP4-CONNECT:{{ include "gvm.fullname" . }}-openvas:9391"]
+          args: ["-d", "-d", "UNIX-LISTEN:/run/ospd/ospd.sock,fork", "TCP4-CONNECT:{{ include "gvm.fullname" . }}-openvas:9391"]
           volumeMounts:
             - name: run-dir
-              mountPath: /var/run
-            - name: ospd-socket-dir
-              mountPath: /var/run/ospd
+              mountPath: /run
+            - name: run-dir
+              subPath: ospd
+              mountPath: /run/ospd
           resources:
             {{- toYaml .Values.resources.gvmdOpenvasConnector | nindent 12 }}
       volumes:
         - name: run-dir
-          emptyDir: {}
-        - name: ospd-socket-dir
           emptyDir: {}
         - name: data-volume
           {{- if .Values.persistence.enabled }}

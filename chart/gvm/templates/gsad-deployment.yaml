@@ -41,8 +41,17 @@ spec:
             httpGet:
               path: /
               port: gsad
+          volumeMounts:
+            - name: run-dir
+              mountPath: /run
+            - name: run-dir
+              subPath: gvm
+              mountPath: /run/gvm
           resources:
             {{- toYaml .Values.resources.gsad | nindent 12 }}
+      volumes:
+        - name: run-dir
+          emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

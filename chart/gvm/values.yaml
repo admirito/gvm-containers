@@ -8,7 +8,7 @@ replicaCount: 1
 # Example:
 #
 # global:
-#   gvmImageTag: "10"
+#   gvmImageTag: "20"
 # image:
 #   gvmd:
 #     tag: "{{ .Values.global.gvmImageTag }}"
@@ -21,17 +21,17 @@ image:
   gvmd:
     registry: "docker.io"
     repository: "admirito/gvmd"
-    tag: "11"
+    tag: "20"
     pullPolicy: IfNotPresent
   gsad:
     registry: "docker.io"
     repository: "admirito/gsad"
-    tag: "11"
+    tag: "20"
     pullPolicy: IfNotPresent
   openvas:
     registry: "docker.io"
     repository: "admirito/openvas"
-    tag: "11"
+    tag: "20"
     pullPolicy: IfNotPresent
   socat:
     registry: "docker.io"
@@ -95,11 +95,9 @@ tolerations: []
 
 affinity: {}
 
-# call nvt-sync after chart installation
-syncNvtPluginsAfterInstall: true
-
-# call scapdata-sync and certdata-sync after chart installation
-syncScapCertDataAfterInstall: false
+# update all the nvt, scap, cert and gvmd data feeds in a pre
+# installation hook
+syncFeedsBeforeInstall: true
 
 # the value of dataSubPathPrefix will be used as the prefix for
 # subPath in volumeMounts of gvmd/openvas deployments for the
@@ -131,7 +129,7 @@ gvmd-db:
     # You can override this one, or global.imageRegistry
     registry: "docker.io"
     repository: admirito/gvm-postgres
-    tag: "10"
+    tag: "20"
   volumePermissions:
     enabled: false
   securityContext:

@@ -28,18 +28,19 @@ spec:
           imagePullPolicy: {{ tpl .Values.image.openvas.pullPolicy . }}
           volumeMounts:
             - name: run-dir
-              mountPath: /var/run
-            - name: redis-socket-dir
-              mountPath: /var/run/redis
+              mountPath: /run
+            - name: run-dir
+              subPath: redis
+              mountPath: /run/redis
             - name: data-volume
-              subPath: {{ include "gvm.dataSubPathPrefix" . }}plugins
-              mountPath: /var/lib/openvas/plugins
+              subPath: {{ include "gvm.dataSubPathPrefix" . }}openvas
+              mountPath: /var/lib/openvas
           resources:
             {{- toYaml .Values.resources.openvas | nindent 12 }}
         - name: {{ .Chart.Name }}-openvas-listener
           image: "{{ tpl .Values.image.socat.registry . }}/{{ tpl .Values.image.socat.repository . }}:{{ tpl .Values.image.socat.tag . }}"
           imagePullPolicy: {{ tpl .Values.image.socat.pullPolicy . }}
-          args: ["-d", "-d", "TCP4-LISTEN:9391,fork", "UNIX-CONNECT:/var/run/ospd/ospd.sock"]
+          args: ["-d", "-d", "TCP4-LISTEN:9391,fork", "UNIX-CONNECT:/run/ospd/ospd.sock"]
           ports:
             - name: openvas
               containerPort: 9391
@@ -52,24 +53,23 @@ spec:
               port: openvas
           volumeMounts:
             - name: run-dir
-              mountPath: /var/run
+              mountPath: /run
           resources:
             {{- toYaml .Values.resources.openvasListener | nindent 12 }}
         - name: {{ .Chart.Name }}-redis-connector
           image: "{{ tpl .Values.image.socat.registry . }}/{{ tpl .Values.image.socat.repository . }}:{{ tpl .Values.image.socat.tag . }}"
           imagePullPolicy: {{ tpl .Values.image.socat.pullPolicy . }}
-          args: ["-d", "-d", "UNIX-LISTEN:/var/run/redis/redis.sock,fork", "TCP4-CONNECT:{{ .Release.Name }}-openvas-redis-master:6379"]
+          args: ["-d", "-d", "UNIX-LISTEN:/run/redis/redis.sock,fork", "TCP4-CONNECT:{{ .Release.Name }}-openvas-redis-master:6379"]
           volumeMounts:
             - name: run-dir
-              mountPath: /var/run
-            - name: redis-socket-dir
-              mountPath: /var/run/redis
+              mountPath: /run
+            - name: run-dir
+              subPath: redis
+              mountPath: /run/redis
           resources:
             {{- toYaml .Values.resources.openvasRedisConnector | nindent 12 }}
       volumes:
         - name: run-dir
-          emptyDir: {}
-        - name: redis-socket-dir
           emptyDir: {}
         - name: data-volume
           {{- if .Values.persistence.enabled }}
