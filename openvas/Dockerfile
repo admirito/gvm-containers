@@ -18,7 +18,7 @@ ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 RUN chmod +x /tini
 
 VOLUME /var/lib/openvas \
-       /var/run/redis
+       /run/redis
 
 COPY docker-entrypoint.sh /usr/local/bin/
 ENTRYPOINT ["/tini", "--", "bash", "/usr/local/bin/docker-entrypoint.sh" ]

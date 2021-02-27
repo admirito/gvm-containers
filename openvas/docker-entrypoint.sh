@@ -15,14 +15,14 @@ if [ "${1:0:1}" = '-' ]; then
 fi
 
 if [ "$1" = 'ospd-openvas' ]; then
-    chmod -R 777 /var/run/redis/
+    chmod -R 777 /run/redis/
 
-    rm -f /var/run/ospd.pid
-    mkdir -p /var/run/ospd
+    rm -f /run/ospd.pid
+    mkdir -p /run/ospd
 
     if [ -z "${SKIP_WAIT_REDIS}" ]; then
 	echo "waiting for the redis..."
-	while [ ! -e /var/run/redis/redis.sock ]; do
+	while [ ! -e /run/redis/redis.sock ]; do
 	    sleep 1;
 	done
     fi
