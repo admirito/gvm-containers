@@ -9,6 +9,11 @@ fi
 if [ "$1" = 'gvmd' ]; then
     gvm-manage-certs -q -a &> /dev/nul || true
 
+    # workaround for gsad problem when opening "reports" section
+    # https://github.com/admirito/gvm-containers/issues/26
+    mkdir -p /var/lib/gvm/gvmd/report_formats || true
+    chmod 755 /var/lib/gvm/gvmd/report_formats || true
+
     if [ -z "${SKIP_WAIT_DB}" ]; then
 	echo "waiting for the database..."
 	while ! psql -q "${GVMD_POSTGRESQL_URI}" < /dev/null &> /dev/nul; do
