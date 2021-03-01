@@ -36,6 +36,20 @@ spec:
                   key: postgresql-password
             - name: GVMD_POSTGRESQL_URI
               value: "postgresql://gvmduser:$(GVMD_POSTGRESQL_PASSWORD)@$(GVMD_POSTGRESQL_HOST):5432/gvmd?application_name=gvmd"
+            {{- if and .Values.customFeedsServer.enabled .Values.customFeedsServer.setDefaultFeedServerForGVM }}
+            - name: COMMUNITY_NVT_RSYNC_FEED
+              value: rsync://{{ include "gvm.fullname" . }}-feeds-server:{{ .Values.customFeedsServer.service.port }}/nvt-feed
+            - name: COMMUNITY_CERT_RSYNC_FEED
+              value: rsync://{{ include "gvm.fullname" . }}-feeds-server:{{ .Values.customFeedsServer.service.port }}/cert-data
+            - name: COMMUNITY_SCAP_RSYNC_FEED
+              value: rsync://{{ include "gvm.fullname" . }}-feeds-server:{{ .Values.customFeedsServer.service.port }}/scap-data
+            - name: COMMUNITY_GVMD_DATA_RSYNC_FEED
+              value: rsync://{{ include "gvm.fullname" . }}-feeds-server:{{ .Values.customFeedsServer.service.port }}/data-objects/gvmd/
+            {{- end }}
+            {{- range $item := .Values.extraEnv.gvmd }}
+            - name: {{ tpl $item.name $ | quote }}
+              value: {{ tpl $item.value $ | quote }}
+            {{- end }}
           ports:
             - name: gvmd
               containerPort: 9390

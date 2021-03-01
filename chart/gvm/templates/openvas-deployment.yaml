@@ -26,6 +26,15 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ tpl .Values.image.openvas.registry . }}/{{ tpl .Values.image.openvas.repository . }}:{{ tpl .Values.image.openvas.tag . }}"
           imagePullPolicy: {{ tpl .Values.image.openvas.pullPolicy . }}
+          env:
+            {{- if and .Values.customFeedsServer.enabled .Values.customFeedsServer.setDefaultFeedServerForGVM }}
+            - name: COMMUNITY_NVT_RSYNC_FEED
+              value: rsync://{{ include "gvm.fullname" . }}-feeds-server:{{ .Values.customFeedsServer.service.port }}/nvt-feed
+            {{- end }}
+            {{- range $item := .Values.extraEnv.openvas }}
+            - name: {{ tpl $item.name $ | quote }}
+              value: {{ tpl $item.value $ | quote }}
+            {{- end }}
           volumeMounts:
             - name: run-dir
               mountPath: /run

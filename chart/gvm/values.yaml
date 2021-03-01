@@ -95,9 +95,35 @@ tolerations: []
 
 affinity: {}
 
+extraEnv:
+  gvmd: []
+  gsad: []
+  openvas: []
+
 # update all the nvt, scap, cert and gvmd data feeds in a pre
 # installation hook
 syncFeedsBeforeInstall: true
+
+customFeedsServer:
+  # Enable a deployment with a custom image that could be used as a
+  # custom rsync server to provide feeds for GVM components
+  enabled: false
+  image:
+    registry: ""
+    repository: ""
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 873
+    containerPort: 873
+  resources: {}
+  # Disable `syncFeedsBeforeInstall`; use the custom feed server after
+  # install instead
+  syncFeedsAfterInstall: true
+  # Configure gvmd and openvas deployments to use the custom feed
+  # server service
+  setDefaultFeedServerForGVM: true
 
 # the value of dataSubPathPrefix will be used as the prefix for
 # subPath in volumeMounts of gvmd/openvas deployments for the

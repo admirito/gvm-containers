@@ -29,6 +29,10 @@ spec:
           env:
             - name: GVMD_HOST
               value: {{ include "gvm.fullname" . }}-gvmd
+            {{- range $item := .Values.extraEnv.gsad }}
+            - name: {{ tpl $item.name $ | quote }}
+              value: {{ tpl $item.value $ | quote }}
+            {{- end }}
           ports:
             - name: gsad
               containerPort: 80
