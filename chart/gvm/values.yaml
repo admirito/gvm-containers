@@ -172,6 +172,21 @@ openvas-redis:
     registry: "docker.io"
     repository: bitnami/redis
     tag: "5.0"
+  configmap: |-
+    ## Default redis chart values:
+    # Enable AOF https://redis.io/topics/persistence#append-only-file
+    appendonly yes
+    # Disable RDB persistence, AOF persistence already enabled.
+    save ""
+    ## Values added for openvas:
+    # Multiple KBs can be served in parallel, for multiple hosts
+    # scanned by one or several tasks. This is done using redis
+    # databases, which are independent namepaces. It is therefore
+    # important that redis exports enough databases. This number can
+    # be calculated using the following formula:
+    # DB = 1 + (#of parallel tasks) * (#of parallel hosts)
+    databases 1025
+
   cluster:
     enabled: false
   master:
