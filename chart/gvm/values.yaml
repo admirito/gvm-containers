@@ -148,7 +148,7 @@ persistence:
   accessMode: ReadWriteOnce
   # storageClass:
   # volumeName:
-  size: 1Mi
+  size: 5Gi
 
 gvmd-db:
   image:
@@ -163,8 +163,16 @@ gvmd-db:
   postgresqlUsername: gvmduser
   postgresqlDatabase: gvmd
   extraEnv: {}
-  #persistence:
-  #  existingClaim:
+  # persistence:
+  #   enabled: true
+  #   existingClaim:
+  #   mountPath: /bitnami/postgresql
+  #   subPath: ""
+  #   storageClass: "-"
+  #   accessModes:
+  #     - ReadWriteOnce
+  #   size: 8Gi
+  #   annotations: {}
 
 openvas-redis:
   image:
@@ -193,5 +201,12 @@ openvas-redis:
     # openvas requires "FLUSHDB" but it is disabled by default
     disableCommands: []
   usePassword: false
-  #persistence:
-  #  existingClaim:
+  # master:
+  #   persistence:
+  #     enabled: true
+  #     existingClaim:
+  #     subPath: ""
+  #     storageClass: "-"
+  #     accessModes:
+  #       - ReadWriteOnce
+  #     size: 8Gi
