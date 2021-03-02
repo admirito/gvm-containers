@@ -46,4 +46,18 @@ host's port 8080. So you can access it from [[http://localhost:8080]].
 
 ** Helm Chart
 A helm chart for deploying the docker images on kubernetes is also
-available. For more information please read the [[./chart/README.org][chart/README.org]].
+available. To install GVM on a kubernetes cluster, first create a
+namespace and then install the helm chart:
+
+#+NAME: install on the kubernetes cluster
+#+BEGIN_SRC shell
+kubectl create namespace gvm
+
+helm install gvm \
+    https://github.com/admirito/gvm-containers/releases/download/chart-1.0.0/gvm-1.0.0.tgz \
+    --namespace gvm --timeout 15m \
+    --set gvmd-db.postgresqlPassword="mypassword"
+#+END_SRC
+
+For more information and see other options please read the
+[[./chart/README.org][chart/README.org]].

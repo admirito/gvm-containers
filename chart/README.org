@@ -49,14 +49,14 @@ The following table lists some of the useful configurable parameters
 of the GVM chart and their default values. For a complete list see
 [[./gvm/values.yaml][values.yaml]] file.
 
-| Parameter                               | Description                                                  | Default |
-|-----------------------------------------+--------------------------------------------------------------+---------|
-| image.gvmd.tag                          | the docker tag for gvmd image                                | 20     |
-| image.gsad.tag                          | the docker tag for gsad image                                | 20     |
-| image.openvas.tag                       | the docker tag for openvas image                             | 20     |
-| gvmd-db.image.tag                       | the docker tag for gvm-postgres image                        | 20     |
-| syncFeedsBeforeInstall                  | sync all the GVM feeds with pre-install hooks                | true    |
-| persistence.existingClaim               | name of an existing pvc for data (nvt/scap/cert) persistence | ""      |
-| gvmd-db.postgresqlPassword              | the password for "gvmduser" in "gvmd" postgresql database    | ""      |
-| gvmd-db.persistence.existingClaim       | name of an existing pvc for postgresql data persistence      | ""      |
-| openvas-redis.persistence.existingClaim | name of an existing pvc for redis data persistence           | ""      |
+| Parameter                                      | Description                                                  | Default |
+|------------------------------------------------+--------------------------------------------------------------+---------|
+| image.gvmd.tag                                 | the docker tag for gvmd image                                | 20      |
+| image.gsad.tag                                 | the docker tag for gsad image                                | 20      |
+| image.openvas.tag                              | the docker tag for openvas image                             | 20      |
+| gvmd-db.image.tag                              | the docker tag for gvm-postgres image                        | 20      |
+| syncFeedsBeforeInstall                         | sync all the GVM feeds with pre-install hooks                | true    |
+| persistence.existingClaim                      | name of an existing pvc for data (nvt/scap/cert) persistence | ""      |
+| gvmd-db.postgresqlPassword                     | the password for "gvmduser" in "gvmd" postgresql database    | ""      |
+| gvmd-db.persistence.existingClaim              | name of an existing pvc for postgresql data persistence      | ""      |
+| openvas-redis.master.persistence.existingClaim | name of an existing pvc for redis data persistence           | ""      |
