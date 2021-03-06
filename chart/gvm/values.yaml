@@ -100,9 +100,9 @@ extraEnv:
   gsad: []
   openvas: []
 
-# update all the nvt, scap, cert and gvmd data feeds in a pre
+# update all the nvt, scap, cert and gvmd data feeds in a post
 # installation hook
-syncFeedsBeforeInstall: true
+syncFeedsAfterInstall: true
 
 customFeedsServer:
   # Enable a deployment with a custom image that could be used as a
@@ -118,9 +118,6 @@ customFeedsServer:
     port: 873
     containerPort: 873
   resources: {}
-  # Disable `syncFeedsBeforeInstall`; use the custom feed server after
-  # install instead
-  syncFeedsAfterInstall: true
   # Configure gvmd and openvas deployments to use the custom feed
   # server service
   setDefaultFeedServerForGVM: true

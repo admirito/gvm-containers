@@ -54,9 +54,21 @@ namespace and then install the helm chart:
 kubectl create namespace gvm
 
 helm install gvm \
-    https://github.com/admirito/gvm-containers/releases/download/chart-1.0.0/gvm-1.0.0.tgz \
-    --namespace gvm --timeout 15m \
+    https://github.com/admirito/gvm-containers/releases/download/chart-1.0.1/gvm-1.0.1.tgz \
+    --namespace gvm --timeout 20m \
     --set gvmd-db.postgresqlPassword="mypassword"
+#+END_SRC
+
+By default the =syncFeedsAfterInstall= option is enabled, so a
+post-installation hook tries to update all the GVM feeds and it may
+slow down the installation process considerably. You can view the
+feeds sync post installation progress by =kubectl logs= command:
+
+#+NAME: install on the kubernetes cluster
+#+BEGIN_SRC shell
+NS=gvm
+
+kubectl logs -n $NS -f $(kubectl get pod -n $NS -l job-name=gvm-feeds-sync -o custom-columns=:metadata.name --no-headers)
 #+END_SRC
 
 For more information and see other options please read the
