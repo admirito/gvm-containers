@@ -14,12 +14,17 @@ sources:
 maintainers:
   - name: Mohammad Razavi
     twitter: "@admirito"
+  - name: olivier rochon
+    twitter: "@kshuttletech"
 dependencies:
   - name: postgresql
-    version: ~8.6.4
-    repository: '@stable'
+    version: 8.6.13
+    repository: https://charts.bitnami.com/bitnami
+#    repository: '@stable'
     alias: gvmd-db
+
   - name: redis
-    version: ~10.5.7
-    repository: '@stable'
+    version: 10.7.5
+    repository: https://charts.bitnami.com/bitnami
+    #repository: '@stable'
     alias: openvas-redis
