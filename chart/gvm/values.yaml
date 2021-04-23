@@ -8,7 +8,7 @@ replicaCount: 1
 # Example:
 #
 # global:
-#   gvmImageTag: "10"
+#   gvmImageTag: "20"
 # image:
 #   gvmd:
 #     tag: "{{ .Values.global.gvmImageTag }}"
@@ -21,17 +21,17 @@ image:
   gvmd:
     registry: "docker.io"
     repository: "admirito/gvmd"
-    tag: "11"
+    tag: "20"
     pullPolicy: IfNotPresent
   gsad:
     registry: "docker.io"
     repository: "admirito/gsad"
-    tag: "11"
+    tag: "20"
     pullPolicy: IfNotPresent
   openvas:
     registry: "docker.io"
     repository: "admirito/openvas"
-    tag: "11"
+    tag: "20"
     pullPolicy: IfNotPresent
   socat:
     registry: "docker.io"
@@ -95,11 +95,35 @@ tolerations: []
 
 affinity: {}
 
-# call nvt-sync after chart installation
-syncNvtPluginsAfterInstall: true
+extraEnv:
+  gvmd: []
+  gsad: []
+  openvas: []
 
-# call scapdata-sync and certdata-sync after chart installation
-syncScapCertDataAfterInstall: false
+# update all the nvt, scap, cert and gvmd data feeds in a pre
+# installation hook
+syncFeedsBeforeInstall: true
+
+customFeedsServer:
+  # Enable a deployment with a custom image that could be used as a
+  # custom rsync server to provide feeds for GVM components
+  enabled: false
+  image:
+    registry: ""
+    repository: ""
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 873
+    containerPort: 873
+  resources: {}
+  # Disable `syncFeedsBeforeInstall`; use the custom feed server after
+  # install instead
+  syncFeedsAfterInstall: true
+  # Configure gvmd and openvas deployments to use the custom feed
+  # server service
+  setDefaultFeedServerForGVM: true
 
 # the value of dataSubPathPrefix will be used as the prefix for
 # subPath in volumeMounts of gvmd/openvas deployments for the
@@ -124,14 +148,14 @@ persistence:
   accessMode: ReadWriteOnce
   # storageClass:
   # volumeName:
-  size: 1Mi
+  size: 5Gi
 
 gvmd-db:
   image:
     # You can override this one, or global.imageRegistry
     registry: "docker.io"
     repository: admirito/gvm-postgres
-    tag: "10"
+    tag: "20"
   volumePermissions:
     enabled: false
   securityContext:
@@ -139,8 +163,16 @@ gvmd-db:
   postgresqlUsername: gvmduser
   postgresqlDatabase: gvmd
   extraEnv: {}
-  #persistence:
-  #  existingClaim:
+  # persistence:
+  #   enabled: true
+  #   existingClaim:
+  #   mountPath: /bitnami/postgresql
+  #   subPath: ""
+  #   storageClass: "-"
+  #   accessModes:
+  #     - ReadWriteOnce
+  #   size: 8Gi
+  #   annotations: {}
 
 openvas-redis:
   image:
@@ -148,8 +180,33 @@ openvas-redis:
     registry: "docker.io"
     repository: bitnami/redis
     tag: "5.0"
+  configmap: |-
+    ## Default redis chart values:
+    # Enable AOF https://redis.io/topics/persistence#append-only-file
+    appendonly yes
+    # Disable RDB persistence, AOF persistence already enabled.
+    save ""
+    ## Values added for openvas:
+    # Multiple KBs can be served in parallel, for multiple hosts
+    # scanned by one or several tasks. This is done using redis
+    # databases, which are independent namepaces. It is therefore
+    # important that redis exports enough databases. This number can
+    # be calculated using the following formula:
+    # DB = 1 + (#of parallel tasks) * (#of parallel hosts)
+    databases 1025
+
   cluster:
     enabled: false
+  master:
+    # openvas requires "FLUSHDB" but it is disabled by default
+    disableCommands: []
   usePassword: false
-  #persistence:
-  #  existingClaim:
+  # master:
+  #   persistence:
+  #     enabled: true
+  #     existingClaim:
+  #     subPath: ""
+  #     storageClass: "-"
+  #     accessModes:
+  #       - ReadWriteOnce
+  #     size: 8Gi

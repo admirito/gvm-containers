@@ -12,7 +12,9 @@ metadata:
   {{- end }}
 spec:
   type: {{ .Values.openvasService.type }}
-  clusterIP: "{{ .Values.openvasService.clusterIP }}"
+  {{- if and .Values.openvasService.clusterIP (eq .Values.openvasService.type "ClusterIP") }}
+  clusterIP: {{ .Values.openvasService.clusterIP }}
+  {{- end }}
   ports:
     - name: openvas
       port: {{ .Values.openvasService.port }}

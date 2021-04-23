@@ -25,10 +25,14 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ tpl .Values.image.gsad.registry . }}/{{ tpl .Values.image.gsad.repository . }}:{{ tpl .Values.image.gsad.tag . }}"
-          imagePullPolicy: {{ .Values.image.gsad.pullPolicy }}
+          imagePullPolicy: {{ tpl .Values.image.gsad.pullPolicy . }}
           env:
             - name: GVMD_HOST
               value: {{ include "gvm.fullname" . }}-gvmd
+            {{- range $item := .Values.extraEnv.gsad }}
+            - name: {{ tpl $item.name $ | quote }}
+              value: {{ tpl $item.value $ | quote }}
+            {{- end }}
           ports:
             - name: gsad
               containerPort: 80
@@ -41,8 +45,17 @@ spec:
             httpGet:
               path: /
               port: gsad
+          volumeMounts:
+            - name: run-dir
+              mountPath: /run
+            - name: run-dir
+              subPath: gvm
+              mountPath: /run/gvm
           resources:
             {{- toYaml .Values.resources.gsad | nindent 12 }}
+      volumes:
+        - name: run-dir
+          emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "gvm.fullname" . }}-feeds-server
+  labels:
+  {{- $_ := set . "applicationNameSuffix" "feeds-server" }}
+  {{- include "gvm.labels" . | nindent 4 }}
+  {{- $_ := set . "applicationNameSuffix" "" }}
+  {{- if .Values.customFeedsServer.service.annotations }}
+  annotations:
+    {{- toYaml .Values.customFeedsServer.service.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.customFeedsServer.service.type }}
+  {{- if and .Values.customFeedsServer.service.clusterIP (eq .Values.customFeedsServer.service.type "ClusterIP") }}
+  clusterIP: {{ .Values.customFeedsServer.service.clusterIP }}
+  {{- end }}
+  ports:
+    - name: rsync
+      port: {{ .Values.customFeedsServer.service.port }}
+      targetPort: rsync
+      protocol: TCP
+      {{- if (and (eq .Values.customFeedsServer.service.type "NodePort") (not (empty .Values.customFeedsServer.service.nodePort))) }}
+      nodePort: {{ .Values.customFeedsServer.service.nodePort }}
+      {{- end }}
+  {{- if .Values.customFeedsServer.service.externalIPs }}
+  externalIPs:
+    {{- toYaml .Values.customFeedsServer.service.externalIPs | nindent 4 }}
+  {{- end }}
+  {{- if .Values.customFeedsServer.service.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.customFeedsServer.service.loadBalancerIP }}"
+  {{- end }}
+  {{- if .Values.customFeedsServer.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- toYaml .Values.customFeedsServer.service.loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "gvm.name" . }}-feeds-server
+    app.kubernetes.io/instance: {{ include "gvm.instance" . }}

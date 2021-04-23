@@ -1,0 +1,15 @@
+version: '2.1'
+
+volumes:
+  gvm-var-lib: {}
+  run-gvm: {}
+
+services:
+  cert-sync:
+    image: admirito/gvmd:20
+    volumes:
+      - gvm-var-lib:/var/lib/gvm
+      - run-gvm:/run/gvm
+    command: greenbone-feed-sync --type CERT
+    # environment:
+    #   COMMUNITY_CERT_RSYNC_FEED: "rsync://feed.community.greenbone.net:/cert-data"
