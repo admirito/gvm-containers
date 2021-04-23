@@ -10,7 +10,6 @@ metadata:
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-
 spec:
   rules:
     - host: {{ .Values.ingress.hostname | quote }}
@@ -18,19 +17,21 @@ spec:
         paths:
           - backend:
               service:
-                name: {{ $fullName }}
+                name: {{ include "gvm.fullname" . }}-gsad
                 port:
-                  name: http
+                  name: gsad
             path: /
             pathType: ImplementationSpecific
 
 
-  {{- if .Values.ingress.tls }}
+  {{- if  .Values.ingress.tls  }}
   tls:
     {{- if .Values.ingress.tls }}
     - hosts:
         - {{ .Values.ingress.hostname | quote }}
       secretName: {{ .Values.ingress.secretName }}
     {{- end }}
+
+
   {{- end }}
 {{- end }}
