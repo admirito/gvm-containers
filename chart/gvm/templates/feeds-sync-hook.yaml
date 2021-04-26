@@ -1,4 +1,4 @@
-{{- if (or .Values.syncFeedsBeforeInstall (and .Values.customFeedsServer.enabled .Values.customFeedsServer.syncFeedsAfterInstall)) }}
+{{- if (or .Values.syncFeedsAfterInstall .Values.customFeedsServer.enabled) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -6,11 +6,7 @@ metadata:
   labels:
   {{- include "gvm.labels" . | nindent 4 }}
   annotations:
-    {{- if .Values.customFeedsServer.enabled }}
     helm.sh/hook: post-install,post-upgrade
-    {{- else }}
-    helm.sh/hook: pre-install,pre-upgrade
-    {{- end }}
     helm.sh/hook-weight: "0"
     helm.sh/hook-delete-policy: hook-succeeded,before-hook-creation
 spec:
