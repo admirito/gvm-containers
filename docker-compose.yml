@@ -25,6 +25,16 @@ services:
     image: admirito/gvmd:20
     environment:
       GVMD_POSTGRESQL_URI: postgresql://gvmduser:mypassword@gvm-postgres:5432/gvmd?application_name=gvmd
+      # see https://marlam.de/msmtp/ for possible configuration options for the default system account
+      # the MSMTP_ prefix is stripped and keys are used as lowercased configuration variable names
+      # MSMTP_HOST: smtp.example.com
+      # MSMTP_PORT: 25
+      # MSMTP_LOGFILE: "-"
+      # MSMTP_TLS: on
+      # MSMTP_TLS_STARTTLS: on
+      # MSMTP_AUTH: on
+      # MSMTP_USER: username
+      # MSMTP_PASSWORD: password
     volumes:
       - openvas-var-lib:/var/lib/openvas
       - gvm-var-lib:/var/lib/gvm

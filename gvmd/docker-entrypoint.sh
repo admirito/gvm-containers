@@ -39,6 +39,16 @@ if [ "$1" = 'gvmd' ]; then
 
     ADMIN_UUID=$(gvmd --get-users --verbose | grep "^admin" | sed 's/admin\s*//') || true
     [ -n "$ADMIN_UUID" ] && gvmd --modify-setting 78eceaec-3385-11ea-b237-28d24461215b --value $ADMIN_UUID || true
+
+    echo "setting up msmtp...."
+    echo -e "# managed by docker-entrypoint.sh" > /etc/msmtprc
+    echo -e "account default" >> /etc/msmtprc
+    printenv | grep "^MSMTP_" | while read var; do
+      key=$(echo "$var" | cut -f1 -d= | cut -f2- -d_ | sed -e 's/\(.*\)/\L\1/')
+      val=$(echo "$var" | cut -f2- -d=)
+      echo "$key $val" >> /etc/msmtprc
+    done
+
 fi
 
 exec "$@"
