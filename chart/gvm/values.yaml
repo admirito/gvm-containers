@@ -147,6 +147,17 @@ persistence:
   # volumeName:
   size: 5Gi
 
+secrets:
+  # existing secret to be used instead of creating a new one
+  existingSecret:
+
+  annotations: {}
+
+  # username and password of GVMD that will be stored in the created
+  # secret
+  gvmdUsername: "admin"
+  gvmdPassword: "admin"
+
 gvmd-db:
   image:
     # You can override this one, or global.imageRegistry

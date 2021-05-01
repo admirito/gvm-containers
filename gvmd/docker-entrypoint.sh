@@ -35,9 +35,11 @@ if [ "$1" = 'gvmd' ]; then
 	echo "creating ${GVMD_USER} user..."
 	gvmd --create-user="${GVMD_USER}" --role="${GVMD_USER_ROLE:-Admin}"
 	gvmd --user="${GVMD_USER}" --new-password="${GVMD_PASSWORD:-${GVMD_USER}}"
+    elif [ -n "${GVMD_PASSWORD}" ]; then
+	gvmd --user="${GVMD_USER:-admin}" --new-password="${GVMD_PASSWORD}" || true
     fi
 
-    ADMIN_UUID=$(gvmd --get-users --verbose | grep "^admin" | sed 's/admin\s*//') || true
+    ADMIN_UUID=$(gvmd --get-users --verbose | grep "^${GVMD_USER:-admin}" | sed "s/${GVMD_USER:-admin}\s*//") || true
     [ -n "$ADMIN_UUID" ] && gvmd --modify-setting 78eceaec-3385-11ea-b237-28d24461215b --value $ADMIN_UUID || true
 fi
 

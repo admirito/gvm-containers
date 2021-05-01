@@ -54,6 +54,8 @@ of the GVM chart and their default values. For a complete list see
 | image.gvmd.tag                                 | the docker tag for gvmd image                                | 20      |
 | image.gsad.tag                                 | the docker tag for gsad image                                | 20      |
 | image.openvas.tag                              | the docker tag for openvas image                             | 20      |
+| secrets.gvmdUsername                           | the username for gvmd                                        | admin   |
+| secrets.gvmdPassword                           | the password for gvmd                                        | admin   |
 | gvmd-db.image.tag                              | the docker tag for gvm-postgres image                        | 20      |
 | syncFeedsAfterInstall                          | sync all the GVM feeds with post-install hooks               | true    |
 | persistence.existingClaim                      | name of an existing pvc for data (nvt/scap/cert) persistence | ""      |
