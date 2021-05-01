@@ -7,7 +7,7 @@ if [ "${1:0:1}" = '-' ]; then
 fi
 
 if [ "$1" = 'gvmd' ]; then
-    gvm-manage-certs -q -a &> /dev/nul || true
+    gvm-manage-certs -q -a &> /dev/null || true
 
     # workaround for gsad problem when opening "reports" section
     # https://github.com/admirito/gvm-containers/issues/26
@@ -16,7 +16,7 @@ if [ "$1" = 'gvmd' ]; then
 
     if [ -z "${SKIP_WAIT_DB}" ]; then
 	echo "waiting for the database..."
-	while ! psql -q "${GVMD_POSTGRESQL_URI}" < /dev/null &> /dev/nul; do
+	while ! psql -q "${GVMD_POSTGRESQL_URI}" < /dev/null &> /dev/null; do
 	    sleep 1;
 	done
     fi
@@ -41,6 +41,16 @@ if [ "$1" = 'gvmd' ]; then
 
     ADMIN_UUID=$(gvmd --get-users --verbose | grep "^${GVMD_USER:-admin}" | sed "s/${GVMD_USER:-admin}\s*//") || true
     [ -n "$ADMIN_UUID" ] && gvmd --modify-setting 78eceaec-3385-11ea-b237-28d24461215b --value $ADMIN_UUID || true
+
+    echo "setting up msmtp...."
+    echo -e "# managed by docker-entrypoint.sh" > /etc/msmtprc
+    echo -e "account default" >> /etc/msmtprc
+    printenv | grep "^MSMTP_" | while read var; do
+      key=$(echo "$var" | cut -f1 -d= | cut -f2- -d_ | sed -e 's/\(.*\)/\L\1/')
+      val=$(echo "$var" | cut -f2- -d=)
+      echo "$key $val" >> /etc/msmtprc
+    done
+
 fi
 
 exec "$@"
