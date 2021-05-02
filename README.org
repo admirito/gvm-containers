@@ -54,7 +54,7 @@ namespace and then install the helm chart:
 kubectl create namespace gvm
 
 helm install gvm \
-    https://github.com/admirito/gvm-containers/releases/download/chart-1.0.1/gvm-1.0.1.tgz \
+    https://github.com/admirito/gvm-containers/releases/download/chart-1.1.0/gvm-1.1.0.tgz \
     --namespace gvm --timeout 20m \
     --set gvmd-db.postgresqlPassword="mypassword"
 #+END_SRC
