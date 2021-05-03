@@ -3,7 +3,7 @@ MAINTAINER Mohammad Razavi <mrazavi64@gmail.com>
 
 RUN set -ex; \
     apt update; \
-    DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends; \
+    DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends gnupg; \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3C453D244AA450E0; \
     echo "deb http://ppa.launchpad.net/mrazavi/gvm/ubuntu focal main" > /etc/apt/sources.list.d/mrazavi-ubuntu-gvm-focal.list; \
     apt update; \
