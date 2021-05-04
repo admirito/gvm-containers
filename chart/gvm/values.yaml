@@ -77,6 +77,8 @@ ingress:
       - path: /
         # pathType: ImplementationSpecific
         # backend:
+        #   serviceName: YourNamespace-gsad
+        #   servicePort: gsad
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -253,6 +255,6 @@ kubectl:
 
 
      - name: "greenbone-nvt-sync"
-       enabled: true
+       enabled: false
        schedule: "30 1  * * *"
        commands: "greenbone-nvt-sync;"
