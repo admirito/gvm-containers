@@ -109,7 +109,7 @@ extraEnv:
 
 ## update all the nvt, scap, cert and gvmd data feeds in a post
 ## installation hook
-syncFeedsAfterInstall: true
+syncFeedsAfterInstall: false
 
 customFeedsServer:
   ## Enable a deployment with a custom image that could be used as a
@@ -225,3 +225,34 @@ openvas-redis:
   #     accessModes:
   #       - ReadWriteOnce
   #     size: 8Gi
+
+
+kubectl:
+   image:
+      repository:  bitnami/kubectl
+      tag: 1.20.4
+      pullPolicy: IfNotPresent
+
+   cronJob:
+     - name: "feed-sync-cert"
+       enabled: false
+       schedule: "0 0  * * *"
+       commands: "greenbone-feed-sync --type CERT;"
+
+
+     - name: "feed-sync-scap"
+       enabled: false
+       schedule: "30 0  * * *"
+       commands: "greenbone-feed-sync --type SCAP;"
+
+
+     - name: "feed-sync-data"
+       enabled: false
+       schedule: "0 1  * * *"
+       commands: "greenbone-feed-sync --type GVMD_DATA;"
+
+
+     - name: "greenbone-nvt-sync"
+       enabled: true
+       schedule: "30 1  * * *"
+       commands: "greenbone-nvt-sync;"

@@ -84,3 +84,22 @@ The prefix for subPath values in volumeMounts
 {{- printf "%s/" (tpl .Values.dataSubPathPrefix .) -}}
 {{- end }}
 {{- end -}}
+
+
+{{- define "kubectl.imageName" -}}
+  {{- $repositoryName := .Values.kubectl.image.repository -}}
+  {{- $tag := .Values.kubectl.image.tag | toString -}}
+  {{- printf "\"%s:%s\"" $repositoryName $tag -}}
+{{- end -}}
+
+
+{{- define "kubectl.imagePullPolicy" -}}
+  {{- $pullpolicy := .Values.kubectl.image.pullPolicy -}}
+  {{- printf "\"%s\"" $pullpolicy -}}
+{{- end -}}
+
+
+
+{{- define "job.namespace" -}}
+{{ .Release.Namespace }}
+{{- end -}}
