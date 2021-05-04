@@ -49,8 +49,15 @@ Create a unique application instance name
 {{/*
 Generate PostgreSQL secret name
 */}}
-{{- define "gvmd.secretName" -}}
+{{- define "gvmd.dbSecretName" -}}
 {{- default (printf "%s-%s" .Release.Name "gvmd-db") (index .Values "gvmd-db" "existingSecret") -}}
+{{- end -}}
+
+{{/*
+Generate the chart secret name
+*/}}
+{{- define "gvmd.secretName" -}}
+{{- default (include "gvm.fullname" .) (.Values.secrets.existingSecret) -}}
 {{- end -}}
 
 {{/*

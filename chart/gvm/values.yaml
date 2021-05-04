@@ -1,11 +1,11 @@
-# Default values for gvm.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+## Default values for gvm.
+## This is a YAML-formatted file.
+## Declare variables to be passed into your templates.
 
 replicaCount: 1
 
-# To change all the gvm tags together you can use go templates.
-# Example:
+## To change all the gvm tags together you can use go templates.
+## Example:
 #
 # global:
 #   gvmImageTag: "20"
@@ -56,29 +56,31 @@ openvasService:
   type: ClusterIP
   port: 9391
 
-#gsa service
+## gsa service
 service:
   type: ClusterIP
   port: 80
 
 ingress:
   enabled: false
-  hostname: chart-example.local
-
   annotations: {}
-    ## kubernetes.io/ingress.class: "nginx"
-    ## nginx.ingress.kubernetes.io/client-max-body-size: "0"
-    ## nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    ## nginx.ingress.kubernetes.io/proxy-read-timeout: "1800"
-    ## nginx.ingress.kubernetes.io/proxy-send-timeout: "1800"
-    ## nginx.ingress.kubernetes.io/proxy-stream-timeout: "1800"
-    ## nginx.ingress.kubernetes.io/upstream-keepalive-timeout: "300"
-
-  tls: false
-  secretName: your-secret-tls
-
-
-
+    # kubernetes.io/ingress.class: "nginx"
+    # nginx.ingress.kubernetes.io/client-max-body-size: "0"
+    # nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    # nginx.ingress.kubernetes.io/proxy-read-timeout: "1800"
+    # nginx.ingress.kubernetes.io/proxy-send-timeout: "1800"
+    # nginx.ingress.kubernetes.io/proxy-stream-timeout: "1800"
+    # nginx.ingress.kubernetes.io/upstream-keepalive-timeout: "300"
+  hosts:
+    - host: chart-example.local
+      paths:
+      - path: /
+        # pathType: ImplementationSpecific
+        # backend:
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 resources:
   gvmd: {}
@@ -105,13 +107,13 @@ extraEnv:
   gsad: []
   openvas: []
 
-# update all the nvt, scap, cert and gvmd data feeds in a pre
-# installation hook
-syncFeedsBeforeInstall: true
+## update all the nvt, scap, cert and gvmd data feeds in a post
+## installation hook
+syncFeedsAfterInstall: true
 
 customFeedsServer:
-  # Enable a deployment with a custom image that could be used as a
-  # custom rsync server to provide feeds for GVM components
+  ## Enable a deployment with a custom image that could be used as a
+  ## custom rsync server to provide feeds for GVM components
   enabled: false
   image:
     registry: ""
@@ -123,31 +125,28 @@ customFeedsServer:
     port: 873
     containerPort: 873
   resources: {}
-  # Disable `syncFeedsBeforeInstall`; use the custom feed server after
-  # install instead
-  syncFeedsAfterInstall: true
-  # Configure gvmd and openvas deployments to use the custom feed
-  # server service
+  ## Configure gvmd and openvas deployments to use the custom feed
+  ## server service
   setDefaultFeedServerForGVM: true
 
-# the value of dataSubPathPrefix will be used as the prefix for
-# subPath in volumeMounts of gvmd/openvas deployments for the
-# persistent volume specified by persistence parameters
+## the value of dataSubPathPrefix will be used as the prefix for
+## subPath in volumeMounts of gvmd/openvas deployments for the
+## persistent volume specified by persistence parameters
 dataSubPathPrefix: ""
 
-# This is data persistence for nasl plugins / scap data / cert
-# data. For database persistence see gvmd-db and openvas-redis.
+## This is data persistence for nasl plugins / scap data / cert
+## data. For database persistence see gvmd-db and openvas-redis.
 persistence:
-  # It is highly recommended not to disable the
-  # persistence. Without enabling a persistent volume
-  # sharing nvt-plugins between gvmd and openvas-scanner is not
-  # possible
+  ## It is highly recommended not to disable the
+  ## persistence. Without enabling a persistent volume
+  ## sharing nvt-plugins between gvmd and openvas-scanner is not
+  ## possible
   enabled: true
 
-  # existing PVC to be used instead of creating a new one
+  ## existing PVC to be used instead of creating a new one
   existingClaim: ""
 
-  # PVC annotations
+  ## PVC annotations
   # annotations:
 
   accessMode: ReadWriteOnce
@@ -155,9 +154,20 @@ persistence:
   # volumeName:
   size: 5Gi
 
+secrets:
+  ## existing secret to be used instead of creating a new one
+  existingSecret:
+
+  annotations: {}
+
+  ## username and password of GVMD that will be stored in the created
+  ## secret
+  gvmdUsername: "admin"
+  gvmdPassword: "admin"
+
 gvmd-db:
   image:
-    # You can override this one, or global.imageRegistry
+    ## You can override this one, or global.imageRegistry
     registry: "docker.io"
     repository: admirito/gvm-postgres
     tag: "20"
@@ -181,12 +191,12 @@ gvmd-db:
 
 openvas-redis:
   image:
-    # You can override this one, or global.imageRegistry
+    ## You can override this one, or global.imageRegistry
     registry: "docker.io"
     repository: bitnami/redis
     tag: "5.0"
   configmap: |-
-    ## Default redis chart values:
+    # Default redis chart values:
     # Enable AOF https://redis.io/topics/persistence#append-only-file
     appendonly yes
     # Disable RDB persistence, AOF persistence already enabled.
@@ -203,7 +213,7 @@ openvas-redis:
   cluster:
     enabled: false
   master:
-    # openvas requires "FLUSHDB" but it is disabled by default
+    ## openvas requires "FLUSHDB" but it is disabled by default
     disableCommands: []
   usePassword: false
   # master:

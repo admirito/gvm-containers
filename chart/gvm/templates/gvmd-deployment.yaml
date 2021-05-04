@@ -27,12 +27,22 @@ spec:
           image: "{{ tpl .Values.image.gvmd.registry . }}/{{ tpl .Values.image.gvmd.repository . }}:{{ tpl .Values.image.gvmd.tag . }}"
           imagePullPolicy: {{ tpl .Values.image.gvmd.pullPolicy . }}
           env:
+            - name: GVMD_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "gvmd.secretName" . }}
+                  key: username
+            - name: GVMD_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "gvmd.secretName" . }}
+                  key: password
             - name: GVMD_POSTGRESQL_HOST
               value: {{ .Release.Name }}-gvmd-db
             - name: GVMD_POSTGRESQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "gvmd.secretName" . }}
+                  name: {{ include "gvmd.dbSecretName" . }}
                   key: postgresql-password
             - name: GVMD_POSTGRESQL_URI
               value: "postgresql://gvmduser:$(GVMD_POSTGRESQL_PASSWORD)@$(GVMD_POSTGRESQL_HOST):5432/gvmd?application_name=gvmd"
