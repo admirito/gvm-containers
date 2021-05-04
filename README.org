@@ -54,14 +54,16 @@ namespace and then install the helm chart:
 kubectl create namespace gvm
 
 helm install gvm \
-    https://github.com/admirito/gvm-containers/releases/download/chart-1.1.0/gvm-1.1.0.tgz \
-    --namespace gvm --timeout 20m \
-    --set gvmd-db.postgresqlPassword="mypassword"
+    https://github.com/admirito/gvm-containers/releases/download/chart-1.2.0/gvm-1.2.0.tgz \
+    --namespace gvm --set gvmd-db.postgresqlPassword="mypassword"
 #+END_SRC
 
-By default the =syncFeedsAfterInstall= option is enabled, so a
-post-installation hook tries to update all the GVM feeds and it may
-slow down the installation process considerably. You can view the
+By default a cron job with a =@daily= schedule will be created to
+update the GVM feeds. You can also enable a helm post installation
+hook to perform the feeds synchronization before the installation is
+complete by adding ~--timeout 90m --set syncFeedsAfterInstall=true~
+arguments to the =helm install= command. Of course, this will slow
+down the installation process considerably, although you can view the
 feeds sync post installation progress by =kubectl logs= command:
 
 #+NAME: install on the kubernetes cluster
@@ -70,6 +72,13 @@ NS=gvm
 
 kubectl logs -n $NS -f $(kubectl get pod -n $NS -l job-name=gvm-feeds-sync -o custom-columns=:metadata.name --no-headers)
 #+END_SRC
+
+Please note that =feed.community.greenbone.net= servers will only
+allow only one feed sync per time so you should avoid running multiple
+feed sync jobs, otherwise the source ip will be temporarily
+blocked. So if you are enabling =syncFeedsAfterInstall= you have to
+make sure the cron job will not be scheduled during the post
+installation process.
 
 For more information and see other options please read the
 [[./chart/README.org][chart/README.org]].

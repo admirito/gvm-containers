@@ -107,9 +107,14 @@ extraEnv:
   gsad: []
   openvas: []
 
+## A cron job to synchronize feeds on a schedule
+syncFeedsCronJob:
+  enabled: true
+  schedule: "@daily"
+
 ## update all the nvt, scap, cert and gvmd data feeds in a post
 ## installation hook
-syncFeedsAfterInstall: true
+syncFeedsAfterInstall: false
 
 customFeedsServer:
   ## Enable a deployment with a custom image that could be used as a
