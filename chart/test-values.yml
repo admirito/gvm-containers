@@ -1,0 +1,53 @@
+global:
+  ravinRegistry: dakar.soc1.ir
+  imagePullPolicy: Always
+  packageDataSubPath: package-data
+
+  # used by new bitnami charts, e.g. postgresql & redis
+  imageRegistry: dakar.soc1.ir
+
+image:
+  gvmd:
+    registry: "{{ .Values.global.ravinRegistry }}"
+    pullPolicy: "{{ .Values.global.imagePullPolicy }}"
+  gsad:
+    registry: "{{ .Values.global.ravinRegistry }}"
+    pullPolicy: "{{ .Values.global.imagePullPolicy }}"
+  openvas:
+    registry: "{{ .Values.global.ravinRegistry }}"
+    pullPolicy: "{{ .Values.global.imagePullPolicy }}"
+  socat:
+    registry: "{{ .Values.global.ravinRegistry }}"
+    pullPolicy: "{{ .Values.global.imagePullPolicy }}"
+
+dataSubPathPrefix: "{{ .Values.global.packageDataSubPath }}/gvm"
+
+syncFeedsAfterInstall: true
+
+customFeedsServer:
+  enabled: true
+  image:
+    registry: "{{ .Values.global.ravinRegistry }}"
+    repository: "gvm-feeds"
+    tag: "latest-unstable"
+    pullPolicy: "{{ .Values.global.imagePullPolicy }}"
+  service:
+    type: ClusterIP
+    port: 873
+  setDefaultFeedServerForGVM: true
+
+
+persistence:
+  existingClaim: "config-claim"
+
+gvmd-db:
+  image:
+    pullPolicy: Always
+  persistence:
+    existingClaim: gvmd-db-claim
+
+openvas-redis:
+  image:
+    pullPolicy: Always
+  persistence:
+    existingClaim: openvas-redis-claim

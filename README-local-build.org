@@ -1,0 +1,8 @@
+* apt cache for Dockerfile
+#+begin_src
+FROM gvm-cache as cache
+FROM ubuntu:focal
+copy --from=cache /var/lib/apt/lists /var/lib/apt/lists
+copy --from=cache /var/cache/apt/archives /var/cache/apt/archives
+RUN rm /etc/apt/apt.conf.d/docker-*
+#+end_src
