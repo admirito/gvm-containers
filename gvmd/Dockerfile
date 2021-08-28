@@ -10,10 +10,10 @@ RUN set -ex; \
     DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends gvmd-pg postgresql-client texlive-latex-base texlive-latex-extra texlive-fonts-recommended xsltproc gnutls-bin xmlstarlet zip python3 python3-lxml smbclient snmp gnupg openssh-client sshpass socat haveged rsync wget gpgsm xml-twig-tools msmtp msmtp-mta; \
     sed -i 's|/var/log/gvm/gvmd.log|/dev/stdout|g' /etc/gvm/gvmd_log.conf; \
     cd /; \
-    apt download openvas; \
-    dpkg --fsys-tarfile openvas_*.deb | tar xf - ./usr/bin/greenbone-nvt-sync; \
+    apt download openvas-scanner; \
+    dpkg --fsys-tarfile openvas-scanner_*.deb | tar xf - ./usr/bin/greenbone-nvt-sync; \
     sed -i 's/if \[ "`id -u`" -eq "0" \]/if fasle \&\& [ "`id -u`" -eq "0" ]/' /usr/bin/greenbone-nvt-sync; \
-    rm -rf ./openvas_*.deb; \
+    rm -rf ./openvas-scanner_*.deb; \
     rm -rf /var/lib/apt/lists/*
 
 ENV GVMD_POSTGRESQL_URI="postgresql://gvmduser:password@postgres:5432/gvmd?application_name=gvmd" \

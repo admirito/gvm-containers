@@ -11,7 +11,7 @@ volumes:
 
 services:
   gvm-postgres:
-    image: admirito/gvm-postgres:20
+    image: admirito/gvm-postgres:21
     environment:
       PGDATA: /var/lib/postgresql/data
       POSTGRES_DB: gvmd
@@ -22,7 +22,7 @@ services:
 
   gvmd:
     # CONNECTED /run/ospd/ospd.sock
-    image: admirito/gvmd:20
+    image: admirito/gvmd:21
     environment:
       GVMD_POSTGRESQL_URI: postgresql://gvmduser:mypassword@gvm-postgres:5432/gvmd?application_name=gvmd
       # see https://marlam.de/msmtp/ for possible configuration options for the default system account
@@ -46,7 +46,7 @@ services:
         condition: service_started
 
   gsad:
-    image: admirito/gsad:20
+    image: admirito/gsad:21
     volumes:
       - run-gvm:/run/gvm
     ports:
@@ -63,7 +63,7 @@ services:
   openvas:
     # LISTENING /run/ospd/ospd.sock
     # CONNECTED /run/redis/redis.sock
-    image: admirito/openvas:20
+    image: admirito/openvas-scanner:21
     privileged: true
     sysctls:
       net.core.somaxconn: '2048'

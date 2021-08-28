@@ -6,7 +6,7 @@ Edition (GSE)]] open source project.
 
 ** Docker
 The source code of [[https://hub.docker.com/u/admirito][admirito]]'s unofficial docker images for Greenbone
-Vulnerability Management 20--which is based on [[https://launchpad.net/~mrazavi/+archive/ubuntu/gvm][admirito's GVM PPA]]--is
+Vulnerability Management 21--which is based on [[https://launchpad.net/~mrazavi/+archive/ubuntu/gvm][admirito's GVM PPA]]--is
 hosted on this repo. It contains the source for the following docker
 images:
 - [[https://hub.docker.com/r/admirito/gvmd][gvmd]]: Greenbone Vulnerability Manager
@@ -54,7 +54,7 @@ namespace and then install the helm chart:
 kubectl create namespace gvm
 
 helm install gvm \
-    https://github.com/admirito/gvm-containers/releases/download/chart-1.2.0/gvm-1.2.0.tgz \
+    https://github.com/admirito/gvm-containers/releases/download/chart-1.3.0/gvm-1.3.0.tgz \
     --namespace gvm --set gvmd-db.postgresqlPassword="mypassword"
 #+END_SRC
 
