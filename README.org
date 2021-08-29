@@ -10,9 +10,9 @@ Vulnerability Management 21--which is based on [[https://launchpad.net/~mrazavi/
 hosted on this repo. It contains the source for the following docker
 images:
 - [[https://hub.docker.com/r/admirito/gvmd][gvmd]]: Greenbone Vulnerability Manager
-- [[https://hub.docker.com/r/admirito/openvas][openvas]]: OpenVAS remote network security scanner
+- [[https://hub.docker.com/r/admirito/openvas-scanner][openvas-scanner]]: OpenVAS remote network security scanner
 - [[https://hub.docker.com/r/admirito/gsad][gsad]]: Greenbone Security Assistant
-- [[https://hub.docker.com/r/admirito/gvm-postgres][gvm-postgres]]: PostgreSQL 12 Dataabase with libgvm-pg-server
+- [[https://hub.docker.com/r/admirito/gvm-postgres][gvm-postgres]]: PostgreSQL 12 Database with libgvm-pg-server
   extension to be used by gvmd
 
 To setup the GVM system with =docker-compose=, first clone the repo and
