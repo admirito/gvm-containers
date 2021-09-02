@@ -6,7 +6,7 @@ volumes:
 
 services:
   nvt-sync:
-    image: admirito/openvas:21
+    image: admirito/openvas-scanner:21
     volumes:
       - openvas-var-lib:/var/lib/openvas
       - run-gvm:/run/gvm
