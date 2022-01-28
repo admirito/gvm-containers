@@ -21,17 +21,17 @@ image:
   gvmd:
     registry: "docker.io"
     repository: "admirito/gvmd"
-    tag: "21"
+    tag: "21.4.4"
     pullPolicy: IfNotPresent
   gsad:
     registry: "docker.io"
     repository: "admirito/gsad"
-    tag: "21"
+    tag: "21.4.3"
     pullPolicy: IfNotPresent
   openvas:
     registry: "docker.io"
     repository: "admirito/openvas-scanner"
-    tag: "21"
+    tag: "21.4.3"
     pullPolicy: IfNotPresent
   socat:
     registry: "docker.io"
@@ -77,8 +77,6 @@ ingress:
       - path: /
         # pathType: ImplementationSpecific
         # backend:
-        #   serviceName: YourNamespace-gsad
-        #   servicePort: gsad
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -177,7 +175,7 @@ gvmd-db:
     ## You can override this one, or global.imageRegistry
     registry: "docker.io"
     repository: admirito/gvm-postgres
-    tag: "20"
+    tag: "21.4.4"
   volumePermissions:
     enabled: false
   securityContext:
@@ -232,34 +230,3 @@ openvas-redis:
   #     accessModes:
   #       - ReadWriteOnce
   #     size: 8Gi
-
-
-kubectl:
-   image:
-      repository:  bitnami/kubectl
-      tag: 1.20.4
-      pullPolicy: IfNotPresent
-
-   cronJob:
-     - name: "feed-sync-cert"
-       enabled: false
-       schedule: "0 0  * * *"
-       commands: "greenbone-feed-sync --type CERT;"
-
-
-     - name: "feed-sync-scap"
-       enabled: false
-       schedule: "30 0  * * *"
-       commands: "greenbone-feed-sync --type SCAP;"
-
-
-     - name: "feed-sync-data"
-       enabled: false
-       schedule: "0 1  * * *"
-       commands: "greenbone-feed-sync --type GVMD_DATA;"
-
-
-     - name: "greenbone-nvt-sync"
-       enabled: false
-       schedule: "30 1  * * *"
-       commands: "greenbone-nvt-sync;"
