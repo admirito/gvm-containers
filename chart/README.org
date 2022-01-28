@@ -38,27 +38,37 @@ Then you can install the chart with helm:
 
 #+NAME: install GVM helm chart
 #+BEGIN_SRC shell
-helm install gvm ./gvm-*.tgz --namespace gvm --timeout 20m --set gvmd-db.postgresqlPassword="mypassword"
+helm install gvm ./gvm-*.tgz --namespace gvm --set gvmd-db.postgresqlPassword="mypassword"
 #+END_SRC
 
-You have to also provide =persistence= configuration, to make sure your
-data persist in pods life cycle.
+You can also provide =persistence= configuration, to make sure your
+data persist in pods life cycle, correctly. Note that =persistence=
+options are for =gvmd= and =openvas= data files, while
+=gvmd-db.persistence= and =openvas-redis.master.persistence= are for
+=postgres= and =redis= accordingly.
+
+By default three =PVC= objects with =ReadWriteOnce= access modes will
+be created and some of the volumes will be mounted on multiple pods.
+So you have to make sure the volumes are available on all the cluster
+nodes.
 
 ** Configuration
 The following table lists some of the useful configurable parameters
 of the GVM chart and their default values. For a complete list see
 [[./gvm/values.yaml][values.yaml]] file.
 
-| Parameter                                      | Description                                                  | Default |
-|------------------------------------------------+--------------------------------------------------------------+---------|
-| image.gvmd.tag                                 | the docker tag for gvmd image                                | 20      |
-| image.gsad.tag                                 | the docker tag for gsad image                                | 20      |
-| image.openvas.tag                              | the docker tag for openvas image                             | 20      |
-| secrets.gvmdUsername                           | the username for gvmd                                        | admin   |
-| secrets.gvmdPassword                           | the password for gvmd                                        | admin   |
-| gvmd-db.image.tag                              | the docker tag for gvm-postgres image                        | 20      |
-| syncFeedsAfterInstall                          | sync all the GVM feeds with post-install hooks               | true    |
-| persistence.existingClaim                      | name of an existing pvc for data (nvt/scap/cert) persistence | ""      |
-| gvmd-db.postgresqlPassword                     | the password for "gvmduser" in "gvmd" postgresql database    | ""      |
-| gvmd-db.persistence.existingClaim              | name of an existing pvc for postgresql data persistence      | ""      |
-| openvas-redis.master.persistence.existingClaim | name of an existing pvc for redis data persistence           | ""      |
+| Parameter                             | Description                                               | Default |
+|---------------------------------------+-----------------------------------------------------------+---------|
+| image.gvmd.tag                        | the docker tag for gvmd image                             | 21      |
+| image.gsad.tag                        | the docker tag for gsad image                             | 21      |
+| image.openvas.tag                     | the docker tag for openvas image                          | 21      |
+| gvmd-db.image.tag                     | the docker tag for gvm-postgres image                     | 21      |
+| secrets.gvmdUsername                  | the username for gvmd                                     | admin   |
+| secrets.gvmdPassword                  | the password for gvmd                                     | admin   |
+| gvmd-db.postgresqlPassword            | the password for "gvmduser" in "gvmd" postgresql database | ""      |
+| syncFeedsAfterInstall                 | sync all the GVM feeds with post-install hooks            | false   |
+| syncFeedsCronJob.enabled              | create a cron job to sync GVM feeds                       | true    |
+| syncFeedsCronJob.schedule             | the feed sync cron job schedule                           | @daily  |
+| persistence.size                      | storage request size for the data (nvt/scap/cert) pvc     | 5Gi     |
+| gvmd-db.persistence.size              | storage request size for the postgresql pvc               | 8Gi     |
+| openvas-redis.master.persistence.size | storage request size for the redis pvc                    | 8Gi     |

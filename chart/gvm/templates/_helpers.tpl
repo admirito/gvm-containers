@@ -85,21 +85,33 @@ The prefix for subPath values in volumeMounts
 {{- end }}
 {{- end -}}
 
-
-{{- define "kubectl.imageName" -}}
-  {{- $repositoryName := .Values.kubectl.image.repository -}}
-  {{- $tag := .Values.kubectl.image.tag | toString -}}
-  {{- printf "\"%s:%s\"" $repositoryName $tag -}}
+{{/*
+Generate a list of environment variables for feed synchronization
+*/}}
+{{- define "gvm.feedEnvList" -}}
+{{- if .Values.customFeedsServer.enabled -}}
+- name: COMMUNITY_NVT_RSYNC_FEED
+  value: rsync://{{ include "gvm.fullname" . }}-feeds-server:{{ .Values.customFeedsServer.service.port }}/nvt-feed
+- name: COMMUNITY_CERT_RSYNC_FEED
+  value: rsync://{{ include "gvm.fullname" . }}-feeds-server:{{ .Values.customFeedsServer.service.port }}/cert-data
+- name: COMMUNITY_SCAP_RSYNC_FEED
+  value: rsync://{{ include "gvm.fullname" . }}-feeds-server:{{ .Values.customFeedsServer.service.port }}/scap-data
+- name: COMMUNITY_GVMD_DATA_RSYNC_FEED
+  value: rsync://{{ include "gvm.fullname" . }}-feeds-server:{{ .Values.customFeedsServer.service.port }}/data-objects/gvmd/
+{{- end -}}
 {{- end -}}
 
-
-{{- define "kubectl.imagePullPolicy" -}}
-  {{- $pullpolicy := .Values.kubectl.image.pullPolicy -}}
-  {{- printf "\"%s\"" $pullpolicy -}}
-{{- end -}}
-
-
-
-{{- define "job.namespace" -}}
-{{ .Release.Namespace }}
+{{/*
+Generate shell commands to be executed for feed synchronization
+*/}}
+{{- define "gvm.feedSyncShellCommands" -}}
+{{- if .Values.customFeedsServer.enabled -}}
+while ! timeout 5s bash -c "</dev/tcp/{{ include "gvm.fullname" . }}-feeds-server/{{ .Values.customFeedsServer.service.port }}"; do
+    sleep 1
+done
+{{- end }}
+greenbone-nvt-sync
+greenbone-feed-sync --type CERT
+greenbone-feed-sync --type SCAP
+greenbone-feed-sync --type GVMD_DATA
 {{- end -}}

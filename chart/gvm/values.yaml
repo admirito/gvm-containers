@@ -8,7 +8,7 @@ replicaCount: 1
 ## Example:
 #
 # global:
-#   gvmImageTag: "20"
+#   gvmImageTag: "21"
 # image:
 #   gvmd:
 #     tag: "{{ .Values.global.gvmImageTag }}"
@@ -21,17 +21,17 @@ image:
   gvmd:
     registry: "docker.io"
     repository: "admirito/gvmd"
-    tag: "20"
+    tag: "21"
     pullPolicy: IfNotPresent
   gsad:
     registry: "docker.io"
     repository: "admirito/gsad"
-    tag: "20"
+    tag: "21"
     pullPolicy: IfNotPresent
   openvas:
     registry: "docker.io"
-    repository: "admirito/openvas"
-    tag: "20"
+    repository: "admirito/openvas-scanner"
+    tag: "21"
     pullPolicy: IfNotPresent
   socat:
     registry: "docker.io"
@@ -108,6 +108,11 @@ extraEnv:
   gvmd: []
   gsad: []
   openvas: []
+
+## A cron job to synchronize feeds on a schedule
+syncFeedsCronJob:
+  enabled: true
+  schedule: "@daily"
 
 ## update all the nvt, scap, cert and gvmd data feeds in a post
 ## installation hook
