@@ -29,6 +29,9 @@ if [ "$1" = 'gvmd' ]; then
 	gvmd --migrate
 
 	touch /var/lib/gvm/.db-init
+    elif [ "${NO_DB_MIGRATION}" != "1" ]; then
+	echo "migrating the database to make sure it is up-to-date..."
+	gvmd --migrate || true
     fi
 
     if [ -n "${GVMD_USER}" ] && ! gvmd --get-users | grep -q "${GVMD_USER}"; then

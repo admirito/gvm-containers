@@ -1,0 +1,66 @@
+{{- if (or .Values.syncFeedsCronJob.enabled) }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ include "gvm.fullname" . }}-feeds-sync
+  labels:
+  {{- include "gvm.labels" . | nindent 4 }}
+spec:
+  concurrencyPolicy: Forbid
+  schedule: {{ .Values.syncFeedsCronJob.schedule | quote }}
+  jobTemplate:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: {{ include "gvm.instance" . }}
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: {{ .Chart.Name }}
+              image: "{{ tpl .Values.image.gvmd.registry . }}/{{ tpl .Values.image.gvmd.repository . }}:{{ tpl .Values.image.gvmd.tag . }}"
+              imagePullPolicy: {{ tpl .Values.image.gvmd.pullPolicy . }}
+              command: ["/bin/sh"]
+              args:
+                - "-cex"
+                - |
+                  {{- include "gvm.feedSyncShellCommands" . | nindent 18 }}
+              {{- if (include "gvm.feedEnvList" .) }}
+              env:
+                {{- include "gvm.feedEnvList" . | nindent 16 }}
+              {{- end }}
+              volumeMounts:
+                - name: run-dir
+                  mountPath: /run
+                - name: run-dir
+                  subPath: gvm
+                  mountPath: /run/gvm
+                - name: data-volume
+                  subPath: {{ include "gvm.dataSubPathPrefix" . }}openvas
+                  mountPath: /var/lib/openvas
+                - name: data-volume
+                  subPath: {{ include "gvm.dataSubPathPrefix" . }}gvm
+                  mountPath: /var/lib/gvm
+          volumes:
+            - name: run-dir
+              emptyDir: {}
+            - name: data-volume
+              {{- if .Values.persistence.enabled }}
+              persistentVolumeClaim:
+                claimName: {{ tpl .Values.persistence.existingClaim . | default (include "gvm.fullname" .) }}
+              {{- else }}
+              emptyDir: {}
+              {{- end }}
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- with .Values.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+{{- end }}

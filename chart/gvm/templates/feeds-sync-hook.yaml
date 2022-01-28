@@ -24,25 +24,10 @@ spec:
           args:
             - "-cex"
             - |
-              {{- if .Values.customFeedsServer.enabled }}
-              while ! timeout 5s bash -c "</dev/tcp/{{ include "gvm.fullname" . }}-feeds-server/{{ .Values.customFeedsServer.service.port }}"; do
-                  sleep 1
-              done
-              {{- end }}
-              greenbone-nvt-sync
-              greenbone-feed-sync --type CERT
-              greenbone-feed-sync --type SCAP
-              greenbone-feed-sync --type GVMD_DATA
-          {{- if .Values.customFeedsServer.enabled }}
+              {{- include "gvm.feedSyncShellCommands" . | nindent 14 }}
+          {{- if (include "gvm.feedEnvList" .) }}
           env:
-            - name: COMMUNITY_NVT_RSYNC_FEED
-              value: rsync://{{ include "gvm.fullname" . }}-feeds-server:{{ .Values.customFeedsServer.service.port }}/nvt-feed
-            - name: COMMUNITY_CERT_RSYNC_FEED
-              value: rsync://{{ include "gvm.fullname" . }}-feeds-server:{{ .Values.customFeedsServer.service.port }}/cert-data
-            - name: COMMUNITY_SCAP_RSYNC_FEED
-              value: rsync://{{ include "gvm.fullname" . }}-feeds-server:{{ .Values.customFeedsServer.service.port }}/scap-data
-            - name: COMMUNITY_GVMD_DATA_RSYNC_FEED
-              value: rsync://{{ include "gvm.fullname" . }}-feeds-server:{{ .Values.customFeedsServer.service.port }}/data-objects/gvmd/
+            {{- include "gvm.feedEnvList" . | nindent 12 }}
           {{- end }}
           volumeMounts:
             - name: run-dir

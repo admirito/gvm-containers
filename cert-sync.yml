@@ -6,7 +6,7 @@ volumes:
 
 services:
   cert-sync:
-    image: admirito/gvmd:20
+    image: admirito/gvmd:21
     volumes:
       - gvm-var-lib:/var/lib/gvm
       - run-gvm:/run/gvm

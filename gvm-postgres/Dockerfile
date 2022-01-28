@@ -10,4 +10,9 @@ RUN set -ex; \
     apt update; \
     echo en_US.UTF-8 UTF-8 > /etc/locale.gen; \
     DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends libgvm-pg-server0; \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/*; \
+    # Add jit = off according to this thread:
+    # https://community.greenbone.net/t/everything-works-but-i-cant-see-any-report/5875/21
+    # (The postgresql.conf.sample will be copied to
+    # /var/lib/postgresql/data/postgresql.conf by the database initializer)
+    printf "\n\n# Added for gvm-postgres\njit = off\n" >> /usr/share/postgresql/postgresql.conf.sample
