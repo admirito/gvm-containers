@@ -39,6 +39,18 @@ image:
     tag: "1.0.3"
     pullPolicy: IfNotPresent
 
+
+socket:
+  openvas:
+    listener: /run/ospd/ospd.sock
+    connector:
+      redis: /run/redis/redis.sock
+  gvmd:
+    connector:
+      openvas: /run/ospd/ospd-openvas.sock
+
+
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
