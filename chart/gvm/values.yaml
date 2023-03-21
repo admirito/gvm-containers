@@ -187,24 +187,26 @@ gvmd-db:
     ## You can override this one, or global.imageRegistry
     registry: "docker.io"
     repository: admirito/gvm-postgres
-    tag: "21.4.4"
+    tag: "21.4.5"
   volumePermissions:
     enabled: false
-  securityContext:
-    enabled: false
-  postgresqlUsername: gvmduser
-  postgresqlDatabase: gvmd
-  extraEnv: {}
-  # persistence:
-  #   enabled: true
-  #   existingClaim:
-  #   mountPath: /bitnami/postgresql
-  #   subPath: ""
-  #   storageClass: "-"
-  #   accessModes:
-  #     - ReadWriteOnce
-  #   size: 8Gi
-  #   annotations: {}
+  primary:
+    podSecurityContext:
+      enabled: false
+  auth:
+    user: gvmduser
+    database: gvmd
+  # primary:
+  #   persistence:
+  #     enabled: true
+  #     existingClaim:
+  #     mountPath: /bitnami/postgresql
+  #     subPath: ""
+  #     storageClass: "-"
+  #     accessModes:
+  #       - ReadWriteOnce
+  #     size: 8Gi
+  #     annotations: {}
 
 openvas-redis:
   image:
@@ -212,7 +214,7 @@ openvas-redis:
     registry: "docker.io"
     repository: bitnami/redis
     tag: "5.0"
-  configmap: |-
+  commonConfiguration: |-
     # Default redis chart values:
     # Enable AOF https://redis.io/topics/persistence#append-only-file
     appendonly yes
@@ -227,12 +229,12 @@ openvas-redis:
     # DB = 1 + (#of parallel tasks) * (#of parallel hosts)
     databases 1025
 
-  cluster:
-    enabled: false
+  architecture: standalone
   master:
     ## openvas requires "FLUSHDB" but it is disabled by default
     disableCommands: []
-  usePassword: false
+  auth:
+    enabled: false
   # master:
   #   persistence:
   #     enabled: true
