@@ -30,8 +30,8 @@ image:
     pullPolicy: IfNotPresent
   openvas:
     registry: "docker.io"
-    repository: "admirito/openvas-scanner"
-    tag: "21.4.3"
+    repository: "konvergence/openvas-scanner"
+    tag: "22.4.1-2"
     pullPolicy: IfNotPresent
   socat:
     registry: "docker.io"
@@ -192,10 +192,16 @@ gvmd-db:
     enabled: false
   primary:
     podSecurityContext:
-      enabled: false
+      fsGroup: 999
+    containerSecurityContext:
+      runAsUser: 999
   auth:
-    user: gvmduser
+    enablePostgresUser: false
     database: gvmd
+    username: gvmduser
+    existingSecret: postgresql-secret
+    secretKeys:
+      userPasswordKey: postgresql-password
   # primary:
   #   persistence:
   #     enabled: true

@@ -50,7 +50,7 @@ Create a unique application instance name
 Generate PostgreSQL secret name
 */}}
 {{- define "gvmd.dbSecretName" -}}
-{{- default (printf "%s-%s" .Release.Name "gvmd-db") (index .Values "gvmd-db" "existingSecret") -}}
+{{- default (printf "%s-%s" .Release.Name "gvmd-db") (.Values.gvmd-db.auth.existingSecret) -}}
 {{- end -}}
 
 {{/*
