@@ -92,4 +92,4 @@ make sure the cron job will not be scheduled during the post
 installation process.
 
 For more information and see other options please read the
-[[./chart/README.org][chart/README.md]].
+[[./chart/README.md][chart/README.md]].
