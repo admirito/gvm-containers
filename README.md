@@ -2,18 +2,18 @@
 
 ## Introduction
 This is the Git repo of the tools to deploy Greenbone Vulnerability
-Management with containers. It is based on the [[https://community.greenbone.net/c/gse][Greenbone Source
-Edition (GSE)]] open source project.
+Management with containers. It is based on the [Greenbone Source
+Edition (GSE)](https://community.greenbone.net) open source project.
 
 ## Docker images
 
 ### for Greenbone Vulnerability Management 21.4
-Based on [[https://launchpad.net/~mrazavi/+archive/ubuntu/gvm][admirito's GVM PPA]]
+Based on [admirito's GVM PPA] (https://launchpad.net/~mrazavi/+archive/ubuntu/gvm)
 The source docker images hosted on this repo. It contains the source for the following docker
 images:
-* [[https://hub.docker.com/r/admirito/gvmd][gvmd]]: Greenbone Vulnerability Manager
-* [[https://hub.docker.com/r/admirito/gsad][gsad]]: Greenbone Security Assistant
-* [[https://hub.docker.com/r/admirito/gvm-postgres][gvm-postgres]]: PostgreSQL 12 Database with libgvm-pg-server
+* [gvmd](https://hub.docker.com/r/admirito/gvmd): Greenbone Vulnerability Manager
+* [gsad](https://hub.docker.com/r/admirito/gsad): Greenbone Security Assistant
+* [gvm-postgres](https://hub.docker.com/r/admirito/gvm-postgres): PostgreSQL 12 Database with libgvm-pg-server
   extension to be used by gvmd
 
 ### for Greenbone Vulnerability Management 22.4
@@ -21,7 +21,7 @@ images:
 Based on the ubuntu Lunar (23.04) : https://launchpad.net/ubuntu/+source/openvas-scanner
 
 The source docker images hosted on this repo. It contains the source for the following docker
-* [[https://hub.docker.com/r/konvergence/openvas-scanner][openvas-scanner]]: OpenVAS remote network security scanner
+* [openvas-scanner](https://hub.docker.com/r/konvergence/openvas-scanner): OpenVAS remote network security scanner
 
 
 

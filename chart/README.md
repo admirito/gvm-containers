@@ -60,7 +60,7 @@ nodes.
 ** Configuration
 The following table lists some of the useful configurable parameters
 of the GVM chart and their default values. For a complete list see
-[[./gvm/values.yaml][values.yaml]] file.
+[values.yaml](./gvm/values.yaml) file.
 
 | Parameter                             | Description                                               | Default |
 |---------------------------------------+-----------------------------------------------------------+---------|
