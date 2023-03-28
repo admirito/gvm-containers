@@ -1,45 +1,50 @@
-* Helm chart for Greenbone Vulnerability Management (GVM)
-** Introduction
+# Helm chart for Greenbone Vulnerability Management (GVM)
+## Introduction
 You can use the provided helm chart in this repository to deploy
 Greenbone Source Edition (GSE) on your kubernetes cloud.
 
-** Getting Helm
+## Getting Helm
 To use "helm" you have to first install it! For more information about
 installing helm follow the instructions at [[https://github.com/helm/helm#install][helm installation notes]].
 
-** Building chart from source
+## Building chart from source
 Use the following instructions to build the gvm helm chart from
 source:
 
-#+NAME: build helm chart for gvm
-#+BEGIN_SRC shell
-git clone https://github.com/admirito/gvm-containers.git
+* build helm chart for gvm
+```
+git clone https://github.com/konvergence/gvm-containers.git
 
 cd gvm-containers/chart
 
 helm dependency build gvm
 helm package gvm
-#+END_SRC
+```
 
 This should leave you with a =gvm-*.tgz= file ready to be deployed in
 the k8s.
 
-** Installing GVM via helm chart
+## Installing GVM via helm chart
 GVM uses several components and databases that should be deployed on
 k8s. Therefore, to have better control on you installation it is
 recommended to crate a separate namespace for it:
 
-#+NAME: create a namespace for GVM installation
-#+BEGIN_SRC shell
+* create a namespace for GVM installation
+```
 kubectl create namespace gvm
-#+END_SRC
+```
 
 Then you can install the chart with helm:
 
-#+NAME: install GVM helm chart
-#+BEGIN_SRC shell
-helm install gvm ./gvm-*.tgz --namespace gvm --set gvmd-db.postgresqlPassword="mypassword"
-#+END_SRC
+* install GVM helm chart
+```
+read -s -p "DB_PASS:" DB_PASS
+kubectl -n gvm create secret generic postgresql-secret --from-literal=postgresql-password=${DB_PASS}
+
+
+
+helm install gvm ./gvm-*.tgz --namespace gvm -set gvmd-db.auth.existingSecret="postgresql-secret" --set gvmd-db.auth.secretKeys.userPasswordKey="postgresql-password"
+```
 
 You can also provide =persistence= configuration, to make sure your
 data persist in pods life cycle, correctly. Note that =persistence=
@@ -55,7 +60,7 @@ nodes.
 ** Configuration
 The following table lists some of the useful configurable parameters
 of the GVM chart and their default values. For a complete list see
-[[./gvm/values.yaml][values.yaml]] file.
+[values.yaml](./gvm/values.yaml) file.
 
 | Parameter                             | Description                                               | Default |
 |---------------------------------------+-----------------------------------------------------------+---------|

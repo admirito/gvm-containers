@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "gvm.fullname" . }}-gvmd
   labels:
@@ -12,6 +12,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ include "gvm.name" . }}-gvmd
       app.kubernetes.io/instance: {{ include "gvm.instance" . }}
+  serviceName: {{ include "gvm.fullname" . }}-gvmd
   template:
     metadata:
       labels:
@@ -46,7 +47,7 @@ spec:
                   key: postgresql-password
             - name: GVMD_POSTGRESQL_URI
               value: "postgresql://gvmduser:$(GVMD_POSTGRESQL_PASSWORD)@$(GVMD_POSTGRESQL_HOST):5432/gvmd?application_name=gvmd"
-            {{- if and .Values.customFeedsServer.enabled .Values.customFeedsServer.setDefaultFeedServerForGVM }}
+           {{- if and .Values.customFeedsServer.enabled .Values.customFeedsServer.setDefaultFeedServerForGVM }}
             - name: COMMUNITY_NVT_RSYNC_FEED
               value: rsync://{{ include "gvm.fullname" . }}-feeds-server:{{ .Values.customFeedsServer.service.port }}/nvt-feed
             - name: COMMUNITY_CERT_RSYNC_FEED
@@ -95,7 +96,7 @@ spec:
         - name: {{ .Chart.Name }}-openvas-connector
           image: "{{ tpl .Values.image.socat.registry . }}/{{ tpl .Values.image.socat.repository . }}:{{ tpl .Values.image.socat.tag . }}"
           imagePullPolicy: {{ tpl .Values.image.socat.pullPolicy . }}
-          args: ["-d", "-d", "UNIX-LISTEN:/run/ospd/ospd.sock,fork", "TCP4-CONNECT:{{ include "gvm.fullname" . }}-openvas:9391"]
+          args: ["-d", "-d", "UNIX-LISTEN:{{ .Values.socket.gvmd.connector.openvas }},fork", "TCP4-CONNECT:{{ include "gvm.fullname" . }}-openvas:9391"]
           volumeMounts:
             - name: run-dir
               mountPath: /run
