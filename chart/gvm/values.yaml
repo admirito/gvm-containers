@@ -182,7 +182,8 @@ secrets:
   gvmdUsername: "admin"
   gvmdPassword: "admin"
 
-gvmd-db:
+#gvmd-db:
+postgresql:
   image:
     ## You can override this one, or global.imageRegistry
     registry: "docker.io"
@@ -214,7 +215,8 @@ gvmd-db:
   #     size: 8Gi
   #     annotations: {}
 
-openvas-redis:
+#openvas-redis:
+redis:
   image:
     ## You can override this one, or global.imageRegistry
     registry: "docker.io"

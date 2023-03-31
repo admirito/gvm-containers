@@ -18,9 +18,9 @@ dependencies:
   - name: postgresql
     version: ~12.2.5
     repository: https://charts.bitnami.com/bitnami
-    alias: gvmd-db
+    #alias: gvmd-db
 
   - name: redis
     version: ~17.8.7
     repository: https://charts.bitnami.com/bitnami
-    alias: openvas-redis
+    #alias: openvas-redis

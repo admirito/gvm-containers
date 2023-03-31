@@ -39,7 +39,7 @@ spec:
                   name: {{ include "gvmd.secretName" . }}
                   key: password
             - name: GVMD_POSTGRESQL_HOST
-              value: {{ .Release.Name }}-gvmd-db
+              value: {{ .Release.Name }}-postgresql
             - name: GVMD_POSTGRESQL_PASSWORD
               valueFrom:
                 secretKeyRef:

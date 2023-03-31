@@ -57,9 +57,18 @@ The Greenbone Security Assistant =gsad= port is exposed on the
 host's port 8080. So you can access it from [[http://localhost:8080]].
 
 ## Helm Chart
-A helm chart for deploying the docker images on kubernetes is also
-available. To install GVM on a kubernetes cluster, first create a
-namespace and then install the helm chart:
+
+A helm chart for deploying the docker images on kubernetes is also available. 
+
+
+**WARNING: Breaking changes**
+* since  helm chart 1.5.0+, 
+* dependencies **gvmd-db** is renamed to **postresql**
+* dependencies **openvas-redis** is renamed to **redis**
+
+
+
+* To install GVM on a kubernetes cluster, first create a namespace and then install the helm chart:
 
 * install on the kubernetes cluster
 ```
