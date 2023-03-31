@@ -62,11 +62,11 @@ A helm chart for deploying the docker images on kubernetes is also available.
 
 
 **WARNING: Breaking changes**
-* since  helm chart 1.5.0+, 
-* dependencies **gvmd-db** is renamed to **postresql**
-* dependencies **openvas-redis** is renamed to **redis**
+  * since  helm chart 1.5.0+, 
+  * dependencies **gvmd-db** is renamed to **postresql**
+  * dependencies **openvas-redis** is renamed to **redis**
 
-
+**Usage**
 
 * To install GVM on a kubernetes cluster, first create a namespace and then install the helm chart:
 
