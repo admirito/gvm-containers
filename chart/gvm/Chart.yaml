@@ -12,10 +12,8 @@ icon: https://community.greenbone.net/uploads/default/original/1X/2bd8ed1c87dd1a
 sources:
   - https://github.com/admirito/gvm-containers
 maintainers:
-  - name: Mohammad Razavi
-    twitter: "@admirito"
-  - name: Olivier Rochon
-    twitter: "@kshuttletech"
+  - name: kShuttle Cloud Team
+    url: "kshuttle.io"
 dependencies:
   - name: postgresql
     version: ~12.2.5
