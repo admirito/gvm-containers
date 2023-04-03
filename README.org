@@ -6,13 +6,13 @@ Edition (GSE)]] open source project.
 
 ** Docker
 The source code of [[https://hub.docker.com/u/admirito][admirito]]'s unofficial docker images for Greenbone
-Vulnerability Management 21--which is based on [[https://launchpad.net/~mrazavi/+archive/ubuntu/gvm][admirito's GVM PPA]]--is
+Vulnerability Management 22--which is based on [[https://launchpad.net/~mrazavi/+archive/ubuntu/gvm][admirito's GVM PPA]]--is
 hosted on this repo. It contains the source for the following docker
 images:
 - [[https://hub.docker.com/r/admirito/gvmd][gvmd]]: Greenbone Vulnerability Manager
 - [[https://hub.docker.com/r/admirito/openvas-scanner][openvas-scanner]]: OpenVAS remote network security scanner
 - [[https://hub.docker.com/r/admirito/gsad][gsad]]: Greenbone Security Assistant
-- [[https://hub.docker.com/r/admirito/gvm-postgres][gvm-postgres]]: PostgreSQL 12 Database with libgvm-pg-server
+- [[https://hub.docker.com/r/admirito/gvm-postgres][gvm-postgres]]: PostgreSQL 14 Database with postgresql-14-gvm
   extension to be used by gvmd
 
 To setup the GVM system with =docker-compose=, first clone the repo and
@@ -39,6 +39,11 @@ first time:
 #+BEGIN_SRC shell
 # in the gvm-containers directory
 docker-compose up
+
+## docker images of a specific version can also be specified with
+## an environment variable (for more information take a look at the
+## .env file):
+# GVM_VERSION=22 docker-compose up
 #+END_SRC
 
 The Greenbone Security Assistant =gsad= port is exposed on the

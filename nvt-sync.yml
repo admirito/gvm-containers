@@ -6,10 +6,15 @@ volumes:
 
 services:
   nvt-sync:
-    image: admirito/openvas-scanner:21
+    image: ${GVMD_IMAGE_NAME:-admirito/gvmd}:${GVMD_IMAGE_TAG:-latest}
     volumes:
       - openvas-var-lib:/var/lib/openvas
       - run-gvm:/run/gvm
-    command: greenbone-nvt-sync
+    command:
+      - sh
+      - -xc
+      - |
+        chown -R gvm:gvm /var/lib/openvas
+        greenbone-feed-sync -vvv --type nasl
     # environment:
-    #   COMMUNITY_NVT_RSYNC_FEED: "rsync://feed.community.greenbone.net:/nvt-feed"
+    #   GREENBONE_FEED_SYNC_NASL_URL: "rsync://feed.community.greenbone.net/community/vulnerability-feed/22.04/vt-data/nasl/"

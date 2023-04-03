@@ -49,7 +49,7 @@ spec:
         - name: {{ .Chart.Name }}-openvas-listener
           image: "{{ tpl .Values.image.socat.registry . }}/{{ tpl .Values.image.socat.repository . }}:{{ tpl .Values.image.socat.tag . }}"
           imagePullPolicy: {{ tpl .Values.image.socat.pullPolicy . }}
-          args: ["-d", "-d", "TCP4-LISTEN:9391,fork", "UNIX-CONNECT:/run/ospd/ospd.sock"]
+          args: ["-d", "-d", "TCP4-LISTEN:9391,fork", "UNIX-CONNECT:/run/ospd/ospd-openvas.sock"]
           ports:
             - name: openvas
               containerPort: 9391

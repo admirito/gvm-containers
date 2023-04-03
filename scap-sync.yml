@@ -6,10 +6,15 @@ volumes:
 
 services:
   scap-sync:
-    image: admirito/gvmd:21
+    image: ${GVMD_IMAGE_NAME:-admirito/gvmd}:${GVMD_IMAGE_TAG:-latest}
     volumes:
       - gvm-var-lib:/var/lib/gvm
       - run-gvm:/run/gvm
-    command: greenbone-feed-sync --type SCAP
+    command:
+      - sh
+      - -xc
+      - |
+        chown -R gvm:gvm /var/lib/gvm
+        greenbone-feed-sync -vvv --type scap
     # environment:
-    #   COMMUNITY_SCAP_RSYNC_FEED: "rsync://feed.community.greenbone.net:/scap-data"
+    #   GREENBONE_FEED_SYNC_SCAP_DATA_URL: "rsync://feed.community.greenbone.net/community/vulnerability-feed/22.04/scap-data"

@@ -110,8 +110,9 @@ while ! timeout 5s bash -c "</dev/tcp/{{ include "gvm.fullname" . }}-feeds-serve
     sleep 1
 done
 {{- end }}
-greenbone-nvt-sync
-greenbone-feed-sync --type CERT
-greenbone-feed-sync --type SCAP
-greenbone-feed-sync --type GVMD_DATA
+chown -R gvm:gvm /var/lib/gvm /var/lib/openvas || true
+greenbone-feed-sync -vvv --type nasl
+greenbone-feed-sync -vvv --type cert
+greenbone-feed-sync -vvv --type scap
+greenbone-feed-sync -vvv --type gvmd-data
 {{- end -}}

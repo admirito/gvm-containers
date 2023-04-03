@@ -26,6 +26,8 @@ if [ "$1" = 'ospd-openvas' ]; then
 	    sleep 1;
 	done
     fi
+
+    set -- ospd-openvas ${MQTT_BROKER_ADDRESS+--mqtt-broker-address=$MQTT_BROKER_ADDRESS} ${MQTT_BROKER_PORT+--mqtt-broker-port=$MQTT_BROKER_PORT} "$@"
 fi
 
 exec "$@"

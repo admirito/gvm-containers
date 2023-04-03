@@ -8,7 +8,7 @@ replicaCount: 1
 ## Example:
 #
 # global:
-#   gvmImageTag: "21"
+#   gvmImageTag: "22"
 # image:
 #   gvmd:
 #     tag: "{{ .Values.global.gvmImageTag }}"
@@ -21,17 +21,17 @@ image:
   gvmd:
     registry: "docker.io"
     repository: "admirito/gvmd"
-    tag: "21"
+    tag: "22"
     pullPolicy: IfNotPresent
   gsad:
     registry: "docker.io"
     repository: "admirito/gsad"
-    tag: "21"
+    tag: "22"
     pullPolicy: IfNotPresent
   openvas:
     registry: "docker.io"
     repository: "admirito/openvas-scanner"
-    tag: "21"
+    tag: "22"
     pullPolicy: IfNotPresent
   socat:
     registry: "docker.io"
@@ -199,7 +199,7 @@ openvas-redis:
     ## You can override this one, or global.imageRegistry
     registry: "docker.io"
     repository: bitnami/redis
-    tag: "5.0"
+    tag: "6.0"
   configmap: |-
     # Default redis chart values:
     # Enable AOF https://redis.io/topics/persistence#append-only-file

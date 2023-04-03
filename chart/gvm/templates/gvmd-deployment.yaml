@@ -95,7 +95,7 @@ spec:
         - name: {{ .Chart.Name }}-openvas-connector
           image: "{{ tpl .Values.image.socat.registry . }}/{{ tpl .Values.image.socat.repository . }}:{{ tpl .Values.image.socat.tag . }}"
           imagePullPolicy: {{ tpl .Values.image.socat.pullPolicy . }}
-          args: ["-d", "-d", "UNIX-LISTEN:/run/ospd/ospd.sock,fork", "TCP4-CONNECT:{{ include "gvm.fullname" . }}-openvas:9391"]
+          args: ["-d", "-d", "UNIX-LISTEN:/run/ospd/ospd-openvas.sock,fork", "TCP4-CONNECT:{{ include "gvm.fullname" . }}-openvas:9391"]
           volumeMounts:
             - name: run-dir
               mountPath: /run

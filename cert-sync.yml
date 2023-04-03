@@ -6,10 +6,15 @@ volumes:
 
 services:
   cert-sync:
-    image: admirito/gvmd:21
+    image: ${GVMD_IMAGE_NAME:-admirito/gvmd}:${GVMD_IMAGE_TAG:-latest}
     volumes:
       - gvm-var-lib:/var/lib/gvm
       - run-gvm:/run/gvm
-    command: greenbone-feed-sync --type CERT
+    command:
+      - sh
+      - -xc
+      - |
+        chown -R gvm:gvm /var/lib/gvm
+        greenbone-feed-sync -vvv --type cert
     # environment:
-    #   COMMUNITY_CERT_RSYNC_FEED: "rsync://feed.community.greenbone.net:/cert-data"
+    #   GREENBONE_FEED_SYNC_CERT_DATA_DESTINATION: "rsync://feed.community.greenbone.net/community/vulnerability-feed/22.04/cert-data"

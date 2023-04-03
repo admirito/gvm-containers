@@ -1,13 +1,13 @@
-FROM ubuntu:focal
+FROM ubuntu:jammy
 MAINTAINER Mohammad Razavi <mrazavi64@gmail.com>
 
 RUN set -ex; \
     apt update; \
     DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends gnupg; \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3C453D244AA450E0; \
-    echo "deb http://ppa.launchpad.net/mrazavi/gvm/ubuntu focal main" > /etc/apt/sources.list.d/mrazavi-ubuntu-gvm-focal.list; \
+    echo "deb http://ppa.launchpad.net/mrazavi/gvm/ubuntu jammy main" > /etc/apt/sources.list.d/mrazavi-ubuntu-gvm-jammy.list; \
     apt update; \
-    DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends gvmd-pg postgresql-client texlive-latex-base texlive-latex-extra texlive-fonts-recommended xsltproc gnutls-bin xmlstarlet zip python3 python3-lxml smbclient snmp gnupg openssh-client sshpass socat haveged rsync wget gpgsm xml-twig-tools msmtp msmtp-mta; \
+    DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends gvmd-pg postgresql-client texlive-latex-base texlive-latex-extra texlive-fonts-recommended xsltproc gnutls-bin xmlstarlet zip python3 python3-lxml smbclient snmp gnupg openssh-client sshpass socat haveged rsync wget gpgsm xml-twig-tools msmtp msmtp-mta greenbone-feed-sync; \
     sed -i 's|/var/log/gvm/gvmd.log|/dev/stdout|g' /etc/gvm/gvmd_log.conf; \
     cd /; \
     apt download openvas-scanner; \

@@ -8,10 +8,12 @@ volumes:
   run-redis: {}
   run-ospd: {}
   run-gvm: {}
+  mosquitto-data: {}
+  mosquitto-log: {}
 
 services:
   gvm-postgres:
-    image: admirito/gvm-postgres:21
+    image: ${GVM_POSTGRES_IMAGE_NAME:-admirito/gvm-postgres}:${GVM_POSTGRES_IMAGE_TAG:-latest}
     environment:
       PGDATA: /var/lib/postgresql/data
       POSTGRES_DB: gvmd
@@ -21,8 +23,8 @@ services:
       - postgres-data:/var/lib/postgresql/data
 
   gvmd:
-    # CONNECTED /run/ospd/ospd.sock
-    image: admirito/gvmd:21
+    # CONNECTED /run/ospd/ospd-openvas.sock
+    image: ${GVMD_IMAGE_NAME:-admirito/gvmd}:${GVMD_IMAGE_TAG:-latest}
     environment:
       GVMD_POSTGRESQL_URI: postgresql://gvmduser:mypassword@gvm-postgres:5432/gvmd?application_name=gvmd
       # see https://marlam.de/msmtp/ for possible configuration options for the default system account
@@ -46,7 +48,7 @@ services:
         condition: service_started
 
   gsad:
-    image: admirito/gsad:21
+    image: ${GSAD_IMAGE_NAME:-admirito/gsad}:${GSAD_IMAGE_TAG:-latest}
     volumes:
       - run-gvm:/run/gvm
     ports:
@@ -61,9 +63,9 @@ services:
         condition: service_started
 
   openvas:
-    # LISTENING /run/ospd/ospd.sock
+    # LISTENING /run/ospd/ospd-openvas.sock
     # CONNECTED /run/redis/redis.sock
-    image: admirito/openvas-scanner:21
+    image: ${OPENVAS_SCANNER_IMAGE_NAME:-admirito/openvas-scanner}:${OPENVAS_SCANNER_IMAGE_TAG:-latest}
     privileged: true
     sysctls:
       net.core.somaxconn: '2048'
@@ -71,16 +73,23 @@ services:
       - openvas-var-lib:/var/lib/openvas
       - run-redis:/run/redis
       - run-ospd:/run/ospd
+    environment:
+      MQTT_BROKER_ADDRESS: mosquitto
+      MQTT_BROKER_PORT: 1883
 
     depends_on:
       gvm-postgres:
+        condition: service_started
+      redis:
+        condition: service_started
+      mosquitto:
         condition: service_started
 
   # It is recommended to add vm.overcommit_memory=1 into
   # /etc/systcl.conf on the host
   redis:
     # LISTENING /run/redis/redis.sock
-    image: redis:5.0
+    image: ${REDIS_IMAGE_NAME:-redis}:${REDIS_IMAGE_TAG:-6.0}
     volumes:
     - run-redis:/run/redis
     - redis-data:/data
@@ -89,6 +98,11 @@ services:
     sysctls:
       net.core.somaxconn: '2048'
 
-    depends_on:
-      openvas:
-        condition: service_started
+  mosquitto:
+    image: ${ECLIPSE_MOSQUITTO_IMAGE_NAME:-eclipse-mosquitto}:${ECLIPSE_MOSQUITTO_IMAGE_TAG:-2.0}
+    command: mosquitto -c /mosquitto-no-auth.conf
+    volumes:
+      - mosquitto-data:/mosquitto/data
+      - mosquitto-log:/mosquitto/log
+    ports:
+      - 1883
