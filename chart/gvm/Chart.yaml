@@ -1,6 +1,6 @@
 apiVersion: v2
 name: gvm
-version: 1.5.0
+version: 1.5.1
 appVersion: "21.04"
 description: The Greenbone Vulnerability Management Solution (previously known as Open Vulnerability Assessment System) i.e. a remote network security auditing tool
 keywords:

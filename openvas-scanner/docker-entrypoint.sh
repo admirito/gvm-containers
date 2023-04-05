@@ -8,6 +8,7 @@ export OV_MAX_CHECKS=${OV_MAX_CHECKS:-4}
 cat >/etc/openvas/openvas.conf<<-EOF
 max_hosts = ${OV_MAX_HOST}
 max_checks = ${OV_MAX_CHECKS}
+db_address = /run/redis/redis.sock
 EOF
 
 if [ "${1:0:1}" = '-' ]; then
