@@ -241,6 +241,16 @@ redis:
   master:
     ## openvas requires "FLUSHDB" but it is disabled by default
     disableCommands: []
+
+  # to remove WARNING you have Transparent Huge Pages (THP) support enabled
+  sysctl:
+    command:
+      - sh
+      - '-c'
+      - echo never >/host-sys/kernel/mm/transparent_hugepage/enabled
+    enabled: true
+    mountHostSys: true
+
   auth:
     enabled: false
   # master:

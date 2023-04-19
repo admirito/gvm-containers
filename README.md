@@ -5,6 +5,9 @@ This is the Git repo of the tools to deploy Greenbone Vulnerability
 Management with containers. It is based on the [Greenbone Source
 Edition (GSE)](https://community.greenbone.net) open source project.
 
+* see https://greenbone.github.io/docs/latest/
+* see https://greenbone.github.io/docs/latest/22.4/container/index.html
+
 ## Docker images
 
 ### for Greenbone Vulnerability Management 21.4
