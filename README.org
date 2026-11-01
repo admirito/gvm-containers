@@ -1,3 +1,5 @@
+Archived on 2026-11-01, read-only: containers and a Helm chart for GVM, built from my Launchpad packages (ppa:mrazavi/gvm), 2019 to 2023; no longer maintained
+
 * gvm-containers
 ** Introduction
 This is the Git repo of the tools to deploy Greenbone Vulnerability
